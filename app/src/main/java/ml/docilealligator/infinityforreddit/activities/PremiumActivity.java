@@ -64,11 +64,11 @@ public class PremiumActivity extends AppCompatActivity implements BillingProcess
         if (hasSubscription()) {
             tvStatus.setText("Status: Premium");
 
-            ((Infinity) this.getApplication()).setSomeVariable("Premium");
+
         } else {
             tvStatus.setText("Status: Free");
 
-            ((Infinity) this.getApplication()).setSomeVariable("Free");
+
         }
     }
 

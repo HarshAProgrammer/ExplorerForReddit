@@ -24,7 +24,7 @@ import ml.docilealligator.infinityforreddit.utils.Utils;
 public class Infinity extends Application implements LifecycleObserver  {
     private AppComponent mAppComponent;
     private NetworkWifiStatusReceiver mNetworkWifiStatusReceiver;
-    private String someVariable;
+
 
     @Override
     public void onCreate() {
@@ -93,13 +93,7 @@ public class Infinity extends Application implements LifecycleObserver  {
 
         registerReceiver(new WallpaperChangeReceiver(), new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
     }
-    public String getSomeVariable() {
-        return someVariable;
-    }
 
-    public void setSomeVariable(String someVariable) {
-        this.someVariable = someVariable;
-    }
 
 //    @OnLifecycleEvent(Lifecycle.Event.ON_START)
 //    public void appInForeground(){

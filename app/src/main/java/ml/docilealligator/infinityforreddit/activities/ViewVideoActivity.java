@@ -51,7 +51,14 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 import com.thefuntasty.hauler.DragDirection;
@@ -108,8 +115,7 @@ public class ViewVideoActivity extends AppCompatActivity {
     private static final String VIDEO_URI_STATE = "VUS";
     private static final String VIDEO_TYPE_STATE = "VTS";
     private static final String SUBREDDIT_NAME_STATE = "SNS";
-    private static final String ID_STATE=  "IS";
-
+    private static final String ID_STATE = "IS";
     @BindView(R.id.hauler_view_view_video_activity)
     HaulerView haulerView;
     @BindView(R.id.coordinator_layout_view_video_activity)
@@ -122,12 +128,32 @@ public class ViewVideoActivity extends AppCompatActivity {
     ImageButton muteButton;
     @BindView(R.id.hd_exo_playback_control_view)
     ImageButton hdButton;
-
+    @Inject
+    @Named("no_oauth")
+    Retrofit retrofit;
+    @Inject
+    @Named("gfycat")
+    Retrofit gfycatRetrofit;
+    @Inject
+    @Named("redgifs")
+    Retrofit redgifsRetrofit;
+    @Inject
+    @Named("vReddIt")
+    Retrofit vReddItRetrofit;
+    @Inject
+    @Named("default")
+    SharedPreferences mSharedPreferences;
+    @Inject
+    Executor mExecutor;
+    @Inject
+    SimpleCache mSimpleCache;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private FirebaseDatabase firebaseDatabase;
     private Uri mVideoUri;
     private SimpleExoPlayer player;
     private DefaultTrackSelector trackSelector;
     private DataSource.Factory dataSourceFactory;
-
     private String videoDownloadUrl;
     private String videoFileName;
     private String subredditName;
@@ -142,33 +168,6 @@ public class ViewVideoActivity extends AppCompatActivity {
     private boolean isDataSavingMode;
     private boolean isHd;
     private Integer originalOrientation;
-    public String s;
-
-    @Inject
-    @Named("no_oauth")
-    Retrofit retrofit;
-
-    @Inject
-    @Named("gfycat")
-    Retrofit gfycatRetrofit;
-
-    @Inject
-    @Named("redgifs")
-    Retrofit redgifsRetrofit;
-
-    @Inject
-    @Named("vReddIt")
-    Retrofit vReddItRetrofit;
-
-    @Inject
-    @Named("default")
-    SharedPreferences mSharedPreferences;
-
-    @Inject
-    Executor mExecutor;
-
-    @Inject
-    SimpleCache mSimpleCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,7 +246,7 @@ public class ViewVideoActivity extends AppCompatActivity {
                             int epsilon = 10;
                             int leftLandscape = 90;
                             int rightLandscape = 270;
-                            if(epsilonCheck(orientation, leftLandscape, epsilon) ||
+                            if (epsilonCheck(orientation, leftLandscape, epsilon) ||
                                     epsilonCheck(orientation, rightLandscape, epsilon)) {
                                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                 disable();
@@ -332,7 +331,7 @@ public class ViewVideoActivity extends AppCompatActivity {
             } else {
                 dataSourceFactory = new CacheDataSourceFactory(mSimpleCache,
                         new DefaultDataSourceFactory(ViewVideoActivity.this,
-                        Util.getUserAgent(ViewVideoActivity.this, "Infinity")));
+                                Util.getUserAgent(ViewVideoActivity.this, "Infinity")));
                 player.prepare(new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mVideoUri));
                 preparePlayer(savedInstanceState);
             }
@@ -443,7 +442,7 @@ public class ViewVideoActivity extends AppCompatActivity {
                         videoDownloadUrl = mp4;
                         dataSourceFactory = new CacheDataSourceFactory(mSimpleCache,
                                 new DefaultDataSourceFactory(ViewVideoActivity.this,
-                                Util.getUserAgent(ViewVideoActivity.this, "Infinity")));
+                                        Util.getUserAgent(ViewVideoActivity.this, "Infinity")));
                         player.prepare(new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mVideoUri));
                         preparePlayer(savedInstanceState);
                     }
@@ -630,61 +629,89 @@ public class ViewVideoActivity extends AppCompatActivity {
 
     private void download() {
 
-        if(s == null) {
-            s = "Free";
-        }
-        s = ((Infinity) this.getApplication()).getSomeVariable();
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
 
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        if(s.equals("Free")){
-            new FancyGifDialog.Builder(this)
-                    .setTitle("Upgrade to pro.")
-                    .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
-                    .setTitleTextColor(R.color.colorHeadline)
-                    .setDescriptionTextColor(R.color.colorDescription)
-                    .setNegativeBtnText("Cancel")
-                    .setPositiveBtnBackground(R.color.colorYes)
-                    .setPositiveBtnText("Ok")
-                    .setNegativeBtnBackground(R.color.colorNo)
-                    .setGifResource(R.drawable.premium_gif)
-                    .isCancellable(true)
-                    .OnPositiveClicked(new FancyGifDialogListener() {
-                        @Override
-                        public void OnClick() {
-
-                            Intent intent = new Intent(ViewVideoActivity.this, PremiumActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .OnNegativeClicked(new FancyGifDialogListener() {
-                        @Override
-                        public void OnClick() {
-
-                        }
-                    })
-                    .build();
-
-        }else if(s.equals("Premium")){
-            isDownloading = false;
-
-            Intent intent;
-            if (videoType != VIDEO_TYPE_NORMAL) {
-                intent = new Intent(this, DownloadMediaService.class);
-                intent.putExtra(DownloadMediaService.EXTRA_URL, videoDownloadUrl);
-                intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_VIDEO);
-                intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, videoFileName);
-                intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, subredditName);
-            } else {
-                intent = new Intent(this, DownloadRedditVideoService.class);
-                intent.putExtra(DownloadRedditVideoService.EXTRA_VIDEO_URL, videoDownloadUrl);
-                intent.putExtra(DownloadRedditVideoService.EXTRA_POST_ID, id);
-                intent.putExtra(DownloadRedditVideoService.EXTRA_SUBREDDIT, subredditName);
             }
-            ContextCompat.startForegroundService(this, intent);
-            Toast.makeText(this, R.string.download_started, Toast.LENGTH_SHORT).show();
+        };
 
+
+        if (user != null) {
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+            firebaseDatabase = FirebaseDatabase.getInstance();
+
+
+            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    isDownloading = false;
+
+                    Intent intent;
+                    if (videoType != VIDEO_TYPE_NORMAL) {
+                        intent = new Intent(ViewVideoActivity.this, DownloadMediaService.class);
+                        intent.putExtra(DownloadMediaService.EXTRA_URL, videoDownloadUrl);
+                        intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_VIDEO);
+                        intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, videoFileName);
+                        intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, subredditName);
+                    } else {
+                        intent = new Intent(ViewVideoActivity.this, DownloadRedditVideoService.class);
+                        intent.putExtra(DownloadRedditVideoService.EXTRA_VIDEO_URL, videoDownloadUrl);
+                        intent.putExtra(DownloadRedditVideoService.EXTRA_POST_ID, id);
+                        intent.putExtra(DownloadRedditVideoService.EXTRA_SUBREDDIT, subredditName);
+                    }
+                    ContextCompat.startForegroundService(ViewVideoActivity.this, intent);
+                    Toast.makeText(ViewVideoActivity.this, R.string.download_started, Toast.LENGTH_SHORT).show();
+
+
+                }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    new FancyGifDialog.Builder(ViewVideoActivity.this)
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(ViewVideoActivity.this, PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
+
+
+        } else {
+            Intent intent = new Intent(ViewVideoActivity.this, SubredditSelectionActivity.class);
+            startActivity(intent);
         }
+
 
     }
 
