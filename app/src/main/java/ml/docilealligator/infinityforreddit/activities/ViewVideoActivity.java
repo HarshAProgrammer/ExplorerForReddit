@@ -57,6 +57,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
@@ -675,6 +676,7 @@ public class ViewVideoActivity extends AppCompatActivity {
             storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("purchase_expensive");
                     new FancyGifDialog.Builder(ViewVideoActivity.this)
                             .setTitle("Upgrade to pro.")
                             .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
