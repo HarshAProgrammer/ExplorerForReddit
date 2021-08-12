@@ -4,22 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".activities.PremiumActivity">
 
     <TextView
-        android:id="@+id/tv_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Status: "
-        android:textSize="20sp" />
+        android:id="@+id/purchase_status"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+
+        />
 
     <Button
-        android:id="@+id/btn_premium"
-        android:layout_width="wrap_content"
+        android:id="@+id/purchase_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18sp"
-        android:text="subscribe" />
+        android:gravity="center"
+        android:text="Purchase"
+        android:onClick="purchase"
+        />
 
 </LinearLayout>
