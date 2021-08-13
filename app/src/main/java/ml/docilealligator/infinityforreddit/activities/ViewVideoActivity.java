@@ -710,7 +710,7 @@ public class ViewVideoActivity extends AppCompatActivity {
 
 
         } else {
-            Intent intent = new Intent(ViewVideoActivity.this, SubredditSelectionActivity.class);
+            Intent intent = new Intent(ViewVideoActivity.this, LoginActivity.class);
             startActivity(intent);
         }
 

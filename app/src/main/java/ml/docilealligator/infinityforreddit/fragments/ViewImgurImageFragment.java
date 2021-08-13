@@ -36,6 +36,14 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
@@ -51,17 +59,23 @@ import ml.docilealligator.infinityforreddit.ImgurMedia;
 import ml.docilealligator.infinityforreddit.Infinity;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.SetAsWallpaperCallback;
+import ml.docilealligator.infinityforreddit.activities.LoginActivity;
 import ml.docilealligator.infinityforreddit.activities.PremiumActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewImageOrGifActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewImgurMediaActivity;
+import ml.docilealligator.infinityforreddit.activities.ViewVideoActivity;
 import ml.docilealligator.infinityforreddit.asynctasks.SaveBitmapImageToFile;
 import ml.docilealligator.infinityforreddit.bottomsheetfragments.SetAsWallpaperBottomSheetFragment;
 import ml.docilealligator.infinityforreddit.services.DownloadMediaService;
+import ml.docilealligator.infinityforreddit.services.DownloadRedditVideoService;
 
 public class ViewImgurImageFragment extends Fragment {
 
     public static final String EXTRA_IMGUR_IMAGES = "EII";
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private FirebaseDatabase firebaseDatabase;
 
     @BindView(R.id.progress_bar_view_imgur_image_fragment)
     ProgressBar progressBar;
@@ -248,45 +262,81 @@ public class ViewImgurImageFragment extends Fragment {
     private void download() {
 
 
-        String s = ((Infinity) getActivity().getApplication()).getSomeVariable();
-        if(s.equals("Free")){
-            new FancyGifDialog.Builder(getActivity())
-                    .setTitle("Upgrade to pro.")
-                    .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
-                    .setTitleTextColor(R.color.colorHeadline)
-                    .setDescriptionTextColor(R.color.colorDescription)
-                    .setNegativeBtnText("Cancel")
-                    .setPositiveBtnBackground(R.color.colorYes)
-                    .setPositiveBtnText("Ok")
-                    .setNegativeBtnBackground(R.color.colorNo)
-                    .setGifResource(R.drawable.premium_gif)
-                    .isCancellable(true)
-                    .OnPositiveClicked(new FancyGifDialogListener() {
-                        @Override
-                        public void OnClick() {
 
-                            Intent intent = new Intent(getActivity(), PremiumActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .OnNegativeClicked(new FancyGifDialogListener() {
-                        @Override
-                        public void OnClick() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                        }
-                    })
-                    .build();
 
-        }else if(s.equals("Premium")){
-            isDownloading = false;
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
 
-            Intent intent = new Intent(activity, DownloadMediaService.class);
-            intent.putExtra(DownloadMediaService.EXTRA_URL, imgurMedia.getLink());
-            intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_IMAGE);
-            intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, imgurMedia.getFileName());
-            ContextCompat.startForegroundService(activity, intent);
-            Toast.makeText(activity, R.string.download_started, Toast.LENGTH_SHORT).show();
+            }
+        };
 
+
+        if (user != null) {
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+            firebaseDatabase = FirebaseDatabase.getInstance();
+
+
+            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    isDownloading = false;
+
+                    Intent intent = new Intent(activity, DownloadMediaService.class);
+                    intent.putExtra(DownloadMediaService.EXTRA_URL, imgurMedia.getLink());
+                    intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_IMAGE);
+                    intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, imgurMedia.getFileName());
+                    ContextCompat.startForegroundService(activity, intent);
+                    Toast.makeText(activity, R.string.download_started, Toast.LENGTH_SHORT).show();
+
+
+
+                }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("purchase_expensive");
+                    new FancyGifDialog.Builder(getActivity())
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(getActivity(), PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
+
+
+        } else {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
         }
 
 

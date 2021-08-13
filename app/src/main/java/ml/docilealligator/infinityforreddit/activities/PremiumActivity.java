@@ -1,11 +1,15 @@
 package ml.docilealligator.infinityforreddit.activities;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+import ml.docilealligator.infinityforreddit.BuildConfig;
 import ml.docilealligator.infinityforreddit.R;
 
 public class PremiumActivity extends AppCompatActivity implements PurchasesUpdatedListener {
@@ -290,8 +295,15 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
         try {
             // To get key go to Developer Console > Select your app > Development Tools > Services & APIs.
             String base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxQ7nzMIbyikC49rOrSpZfWd1i6SP0zlP9lZUuIn0k1QAQjSdyfy+ABEPa++//tfVze+zBhyJFXhU6oAAm9PnpLDPkBWvQg7qFOys9kC30OY3ipI9cJr6cvcYxVeHgApKcL6021JOxoFu+ml8wZV4Yys4MGgRdlyKGxRbxdVy5XGELc9G/vmVFrguo3p7g1BDMIetRoD9Y3niCnEUIXHtxe49UHr7rYMiv4lfmTRS6OXiRKcDg4he430FOksAfp1JFli5E9PFCYy5Hcu6T/hgG1o/wBqWTnIw3H48SuwUYC3hoix5EP8u78HuwWuAxd9sbfsJDbYB97nHrTj7egqP2wIDAQAB";
+            if (BuildConfig.DEBUG) {
+                return true;
+            }
+            if (TextUtils.isEmpty(signedData) || TextUtils.isEmpty(base64Key) ||
+                    TextUtils.isEmpty(signature)) {
+                Log.e(TAG, "Purchase verification failed: missing data.");
+                return false;
+            }
             return Security.verifyPurchase(base64Key, signedData, signature);
-
         } catch (IOException e) {
             return false;
         }

@@ -41,6 +41,14 @@ import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.loader.glide.GlideImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import com.github.piasy.biv.view.GlideImageViewFactory;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
@@ -55,14 +63,17 @@ import ml.docilealligator.infinityforreddit.BuildConfig;
 import ml.docilealligator.infinityforreddit.Infinity;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.SetAsWallpaperCallback;
+import ml.docilealligator.infinityforreddit.activities.LoginActivity;
 import ml.docilealligator.infinityforreddit.activities.PremiumActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewImageOrGifActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewRedditGalleryActivity;
+import ml.docilealligator.infinityforreddit.activities.ViewVideoActivity;
 import ml.docilealligator.infinityforreddit.asynctasks.SaveBitmapImageToFile;
 import ml.docilealligator.infinityforreddit.asynctasks.SaveGIFToFile;
 import ml.docilealligator.infinityforreddit.bottomsheetfragments.SetAsWallpaperBottomSheetFragment;
 import ml.docilealligator.infinityforreddit.post.Post;
 import ml.docilealligator.infinityforreddit.services.DownloadMediaService;
+import ml.docilealligator.infinityforreddit.services.DownloadRedditVideoService;
 
 public class ViewRedditGalleryImageOrGifFragment extends Fragment {
 
@@ -85,6 +96,9 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
     private String subredditName;
     private boolean isDownloading = false;
     private boolean isActionBarHidden = false;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private FirebaseDatabase firebaseDatabase;
 
     public ViewRedditGalleryImageOrGifFragment() {
         // Required empty public constructor
@@ -280,46 +294,81 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
 
     private void download() {
 
-        String s = ((Infinity) getActivity().getApplication()).getSomeVariable();
-        if(s.equals("Free")){
-            new FancyGifDialog.Builder(getActivity())
-                    .setTitle("Upgrade to pro.")
-                    .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
-                    .setTitleTextColor(R.color.colorHeadline)
-                    .setDescriptionTextColor(R.color.colorDescription)
-                    .setNegativeBtnText("Cancel")
-                    .setPositiveBtnBackground(R.color.colorYes)
-                    .setPositiveBtnText("Ok")
-                    .setNegativeBtnBackground(R.color.colorNo)
-                    .setGifResource(R.drawable.premium_gif)
-                    .isCancellable(true)
-                    .OnPositiveClicked(new FancyGifDialogListener() {
-                        @Override
-                        public void OnClick() {
 
-                            Intent intent = new Intent(getActivity(), PremiumActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .OnNegativeClicked(new FancyGifDialogListener() {
-                        @Override
-                        public void OnClick() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                        }
-                    })
-                    .build();
 
-        }else if(s.equals("Premium")){
-            isDownloading = false;
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
 
-            Intent intent = new Intent(activity, DownloadMediaService.class);
-            intent.putExtra(DownloadMediaService.EXTRA_URL, media.url);
-            intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, media.mediaType == Post.Gallery.TYPE_GIF ? DownloadMediaService.EXTRA_MEDIA_TYPE_GIF: DownloadMediaService.EXTRA_MEDIA_TYPE_IMAGE);
-            intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, media.fileName);
-            intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, subredditName);
-            ContextCompat.startForegroundService(activity, intent);
-            Toast.makeText(activity, R.string.download_started, Toast.LENGTH_SHORT).show();
+            }
+        };
 
+
+        if (user != null) {
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+            firebaseDatabase = FirebaseDatabase.getInstance();
+
+
+            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    isDownloading = false;
+
+                    Intent intent = new Intent(activity, DownloadMediaService.class);
+                    intent.putExtra(DownloadMediaService.EXTRA_URL, media.url);
+                    intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, media.mediaType == Post.Gallery.TYPE_GIF ? DownloadMediaService.EXTRA_MEDIA_TYPE_GIF: DownloadMediaService.EXTRA_MEDIA_TYPE_IMAGE);
+                    intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, media.fileName);
+                    intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, subredditName);
+                    ContextCompat.startForegroundService(activity, intent);
+                    Toast.makeText(activity, R.string.download_started, Toast.LENGTH_SHORT).show();
+
+
+                }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("purchase_expensive");
+                    new FancyGifDialog.Builder(getActivity())
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(getActivity(), PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
+
+
+        } else {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
         }
 
     }
