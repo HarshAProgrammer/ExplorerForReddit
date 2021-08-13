@@ -1156,4 +1156,13 @@
     <string name="error_parse_trending_search">Parse trending searches failed.\nTap to retry.</string>
     <string name="no_trending_search">No trending searches found.\nTap to retry.</string>
 
+
+
+
+    <!--Premium Activity-->
+    <string name="download"><font fgcolor='#0084ff'>•</font> Download Available </string>
+    <string name="newfeatures"><font fgcolor='#0084ff'>•</font> New features</string>
+    <string name="createposts"><font fgcolor='#0084ff'>•</font> Create Posts</string>
+    <string name="premiumbuttontext">Buy for </string>
+
 </resources>

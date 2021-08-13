@@ -15,4 +15,9 @@
     <color name="colorNo">#F30B0B</color>
     <color name="colorDescription">#8A8787</color>
     <color name="colorHeadline">#000000</color>
+
+
+    <color name="white">#ffffff</color>
+    <color name="ffffffff">#ffffffff</color>
+    <color name="transparent">#00000000</color>
 </resources>

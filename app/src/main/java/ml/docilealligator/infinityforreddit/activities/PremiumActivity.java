@@ -1,7 +1,6 @@
 package ml.docilealligator.infinityforreddit.activities;
 
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -66,8 +65,8 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
 
 
     private void expensiveCheckerFunctionality() {
-        Toolbar toolbar = findViewById(R.id.toolbarExpensiveCheckerActivity);
-        Button buttonExpChecker = findViewById(R.id.btnExpensiveChecker);
+        Toolbar toolbar = findViewById(R.id.toolbarPremium);
+        Button buttonExpChecker = findViewById(R.id.btnPermium);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
