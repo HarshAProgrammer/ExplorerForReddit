@@ -631,25 +631,13 @@ public class ViewVideoActivity extends AppCompatActivity {
     private void download() {
 
         firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
 
-
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-            }
-        };
-
-
-        if (user != null) {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference();
             firebaseDatabase = FirebaseDatabase.getInstance();
 
 
-            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     isDownloading = false;
@@ -673,10 +661,10 @@ public class ViewVideoActivity extends AppCompatActivity {
 
                 }
             });
-            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    FirebaseMessaging.getInstance().subscribeToTopic("purchase_expensive");
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
                     new FancyGifDialog.Builder(ViewVideoActivity.this)
                             .setTitle("Upgrade to pro.")
                             .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
@@ -709,10 +697,7 @@ public class ViewVideoActivity extends AppCompatActivity {
             });
 
 
-        } else {
-            Intent intent = new Intent(ViewVideoActivity.this, RedditLoginActivity.class);
-            startActivity(intent);
-        }
+
 
 
     }

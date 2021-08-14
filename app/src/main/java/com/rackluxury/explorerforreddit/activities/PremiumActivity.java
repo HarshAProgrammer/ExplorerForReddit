@@ -65,14 +65,11 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
 
 
     private void expensiveCheckerFunctionality() {
-        Toolbar toolbar = findViewById(R.id.toolbarPremium);
+
         Button buttonExpChecker = findViewById(R.id.btnPermium);
 
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Most Expensive Watches");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+
+
         billingClient = BillingClient.newBuilder(PremiumActivity.this).enablePendingPurchases().setListener(new PurchasesUpdatedListener() {
             @Override
             //This method starts when user buys a categories
@@ -102,7 +99,7 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                             finish();
 
                         } else {
-                            FirebaseMessaging.getInstance().subscribeToTopic("purchase_expensive");
+                            FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
                         }
                     }
                 }

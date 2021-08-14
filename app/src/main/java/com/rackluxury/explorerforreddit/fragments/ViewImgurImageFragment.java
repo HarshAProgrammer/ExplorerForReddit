@@ -261,19 +261,7 @@ public class ViewImgurImageFragment extends Fragment {
 
 
         firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
 
-
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-            }
-        };
-
-
-        if (user != null) {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference();
             firebaseDatabase = FirebaseDatabase.getInstance();
@@ -298,7 +286,7 @@ public class ViewImgurImageFragment extends Fragment {
             storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    FirebaseMessaging.getInstance().subscribeToTopic("purchase_expensive");
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
                     new FancyGifDialog.Builder(getActivity())
                             .setTitle("Upgrade to pro.")
                             .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
@@ -331,10 +319,7 @@ public class ViewImgurImageFragment extends Fragment {
             });
 
 
-        } else {
-            Intent intent = new Intent(getActivity(), RedditLoginActivity.class);
-            startActivity(intent);
-        }
+
 
 
     }

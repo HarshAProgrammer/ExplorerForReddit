@@ -38,7 +38,8 @@
         tools:replace="android:label">
         <activity
             android:name="com.rackluxury.explorerforreddit.activities.PremiumActivity"
-            android:exported="true" />
+            android:exported="true"
+            />
 
         <activity
             android:name="com.rackluxury.explorerforreddit.activities.LoginOrRegisterActivity"
