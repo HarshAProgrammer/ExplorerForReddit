@@ -1164,5 +1164,8 @@
     <string name="newfeatures"><font fgcolor='#0084ff'>•</font> New features</string>
     <string name="createposts"><font fgcolor='#0084ff'>•</font> Create Posts</string>
     <string name="premiumbuttontext">Buy for </string>
+    <string name="nightMode"><font fgcolor='#0084ff'>•</font> Enable Night Mode</string>
+    <string name="postLayout"><font fgcolor='#0084ff'>•</font> Change Post Layout</string>
+    <string name="slowMode"><font fgcolor='#0084ff'>•</font> Enable Slow Mode</string>
 
 </resources>

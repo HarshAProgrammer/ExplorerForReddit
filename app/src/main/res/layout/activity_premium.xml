@@ -96,10 +96,49 @@
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#000000" />
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/nightMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/addPosts"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/roboto"
+        android:pointerIcon="arrow"
+        android:text="@string/nightMode"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/changePostLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nightMode"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/roboto"
+        android:pointerIcon="arrow"
+        android:text="@string/postLayout"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/slowMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/changePostLayout"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/roboto"
+        android:pointerIcon="arrow"
+        android:text="@string/slowMode"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/slowMode"
         android:layout_centerVertical="true"
         android:weightSum="3"
         android:orientation="horizontal">
