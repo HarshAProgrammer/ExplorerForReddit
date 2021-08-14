@@ -12,7 +12,7 @@
 
     <string name="login_welcome_txt_login">Hello there !\nWelcome Back</string>
     <string name="facebook_app_id">494529088302491</string>
-    <string name="fb_login_protocol_scheme">fb3215654415121488</string>
+    <string name="fb_login_protocol_scheme">fb494529088302491</string>
     <string name="sign_up_label_login">" Sign up"</string>
     <string name="login_fb_btn_label_login">"{faw-facebook-f}    Login with Facebook"</string>
     <string name="forgot_password_login">Forgot password?</string>
