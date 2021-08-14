@@ -3,6 +3,7 @@ package com.rackluxury.explorerforreddit.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,12 +28,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrInterface;
 
@@ -76,6 +83,9 @@ import com.rackluxury.explorerforreddit.subreddit.SubredditData;
 import com.rackluxury.explorerforreddit.utils.APIUtils;
 import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
 import com.rackluxury.explorerforreddit.utils.Utils;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -430,8 +440,57 @@ public class SearchResultActivity extends BaseActivity implements SortTypeSelect
                 }
                 return true;
             case R.id.action_change_post_layout_search_result_activity:
+
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+                FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                StorageReference storageReference = firebaseStorage.getReference();
+
+
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+
                 PostLayoutBottomSheetFragment postLayoutBottomSheetFragment = new PostLayoutBottomSheetFragment();
                 postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                        new FancyGifDialog.Builder(SearchResultActivity.this)
+                                .setTitle("Upgrade to pro.")
+                                .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                                .setTitleTextColor(R.color.colorHeadline)
+                                .setDescriptionTextColor(R.color.colorDescription)
+                                .setNegativeBtnText("Cancel")
+                                .setPositiveBtnBackground(R.color.colorYes)
+                                .setPositiveBtnText("Ok")
+                                .setNegativeBtnBackground(R.color.colorNo)
+                                .setGifResource(R.drawable.premium_gif)
+                                .isCancellable(true)
+                                .OnPositiveClicked(new FancyGifDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+
+                                        Intent intent = new Intent(SearchResultActivity.this, PremiumActivity.class);
+                                        startActivity(intent);
+                                    }
+                                })
+                                .OnNegativeClicked(new FancyGifDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+
+                                    }
+                                })
+                                .build();
+
+
+                    }
+                });
                 return true;
         }
         return super.onOptionsItemSelected(item);

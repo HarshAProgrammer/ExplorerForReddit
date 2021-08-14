@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -41,6 +42,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -51,6 +54,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrInterface;
 
@@ -101,6 +109,8 @@ import com.rackluxury.explorerforreddit.multireddit.MultiReddit;
 import com.rackluxury.explorerforreddit.post.Post;
 import com.rackluxury.explorerforreddit.post.PostDataSource;
 import com.rackluxury.explorerforreddit.readpost.InsertReadPost;
+import com.rackluxury.explorerforreddit.services.DownloadMediaService;
+import com.rackluxury.explorerforreddit.services.DownloadRedditVideoService;
 import com.rackluxury.explorerforreddit.subreddit.ParseSubredditData;
 import com.rackluxury.explorerforreddit.subreddit.SubredditData;
 import com.rackluxury.explorerforreddit.user.BlockUser;
@@ -112,6 +122,9 @@ import com.rackluxury.explorerforreddit.user.UserViewModel;
 import com.rackluxury.explorerforreddit.utils.APIUtils;
 import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
 import com.rackluxury.explorerforreddit.utils.Utils;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
+
 import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -931,28 +944,127 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
             fetchUserInfo();
             return true;
         } else if (itemId == R.id.action_lazy_mode_view_user_detail_activity) {
-            MenuItem lazyModeItem = mMenu.findItem(R.id.action_lazy_mode_view_user_detail_activity);
-            if (isInLazyMode) {
-                isInLazyMode = false;
-                sectionsPagerAdapter.stopLazyMode();
-                lazyModeItem.setTitle(R.string.action_start_lazy_mode);
-                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS |
-                        AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED);
-                collapsingToolbarLayout.setLayoutParams(params);
-            } else {
-                isInLazyMode = true;
-                if (sectionsPagerAdapter.startLazyMode()) {
-                    lazyModeItem.setTitle(R.string.action_stop_lazy_mode);
-                    appBarLayout.setExpanded(false);
-                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
-                    collapsingToolbarLayout.setLayoutParams(params);
-                } else {
-                    isInLazyMode = false;
+
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+
+
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+                    MenuItem lazyModeItem = mMenu.findItem(R.id.action_lazy_mode_view_user_detail_activity);
+                    if (isInLazyMode) {
+                        isInLazyMode = false;
+                        sectionsPagerAdapter.stopLazyMode();
+                        lazyModeItem.setTitle(R.string.action_start_lazy_mode);
+                        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS |
+                                AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED);
+                        collapsingToolbarLayout.setLayoutParams(params);
+                    } else {
+                        isInLazyMode = true;
+                        if (sectionsPagerAdapter.startLazyMode()) {
+                            lazyModeItem.setTitle(R.string.action_stop_lazy_mode);
+                            appBarLayout.setExpanded(false);
+                            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+                            collapsingToolbarLayout.setLayoutParams(params);
+                        } else {
+                            isInLazyMode = false;
+                        }
+                    }
+
                 }
-            }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                    new FancyGifDialog.Builder(ViewUserDetailActivity.this)
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(ViewUserDetailActivity.this, PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
+
+
             return true;
         } else if (itemId == R.id.action_change_post_layout_view_user_detail_activity) {
-            postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+
+
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+                    postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+
+
+                }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                    new FancyGifDialog.Builder(ViewUserDetailActivity.this)
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(ViewUserDetailActivity.this, PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
             return true;
         } else if (itemId == R.id.action_share_view_user_detail_activity) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);

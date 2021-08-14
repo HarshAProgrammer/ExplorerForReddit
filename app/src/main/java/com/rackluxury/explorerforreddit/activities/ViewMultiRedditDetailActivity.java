@@ -2,6 +2,7 @@ package com.rackluxury.explorerforreddit.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,9 +18,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.r0adkll.slidr.Slidr;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,6 +59,9 @@ import com.rackluxury.explorerforreddit.post.PostDataSource;
 import com.rackluxury.explorerforreddit.readpost.InsertReadPost;
 import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
 import com.rackluxury.explorerforreddit.utils.Utils;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
+
 import retrofit2.Retrofit;
 
 public class ViewMultiRedditDetailActivity extends BaseActivity implements SortTypeSelectionCallback,
@@ -233,27 +243,120 @@ public class ViewMultiRedditDetailActivity extends BaseActivity implements SortT
             }
             return true;
         } else if (itemId == R.id.action_lazy_mode_view_multi_reddit_detail_activity) {
-            MenuItem lazyModeItem = mMenu.findItem(R.id.action_lazy_mode_view_multi_reddit_detail_activity);
-            if (isInLazyMode) {
-                isInLazyMode = false;
-                ((FragmentCommunicator) mFragment).stopLazyMode();
-                lazyModeItem.setTitle(R.string.action_start_lazy_mode);
-                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-                collapsingToolbarLayout.setLayoutParams(params);
-            } else {
-                isInLazyMode = true;
-                if (((FragmentCommunicator) mFragment).startLazyMode()) {
-                    lazyModeItem.setTitle(R.string.action_stop_lazy_mode);
-                    appBarLayout.setExpanded(false);
-                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL);
-                    collapsingToolbarLayout.setLayoutParams(params);
-                } else {
-                    isInLazyMode = false;
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+                    MenuItem lazyModeItem = mMenu.findItem(R.id.action_lazy_mode_view_multi_reddit_detail_activity);
+                    if (isInLazyMode) {
+                        isInLazyMode = false;
+                        ((FragmentCommunicator) mFragment).stopLazyMode();
+                        lazyModeItem.setTitle(R.string.action_start_lazy_mode);
+                        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+                        collapsingToolbarLayout.setLayoutParams(params);
+                    } else {
+                        isInLazyMode = true;
+                        if (((FragmentCommunicator) mFragment).startLazyMode()) {
+                            lazyModeItem.setTitle(R.string.action_stop_lazy_mode);
+                            appBarLayout.setExpanded(false);
+                            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL);
+                            collapsingToolbarLayout.setLayoutParams(params);
+                        } else {
+                            isInLazyMode = false;
+                        }
+                    }
+
                 }
-            }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                    new FancyGifDialog.Builder(ViewMultiRedditDetailActivity.this)
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(ViewMultiRedditDetailActivity.this, PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
+
             return true;
         } else if (itemId == R.id.action_change_post_layout_view_multi_reddit_detail_activity) {
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+
+
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+
             postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+
+                }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                    new FancyGifDialog.Builder(ViewMultiRedditDetailActivity.this)
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(ViewMultiRedditDetailActivity.this, PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
             return true;
         } else if (itemId == R.id.action_edit_view_multi_reddit_detail_activity) {
             Intent editIntent = new Intent(this, EditMultiRedditActivity.class);

@@ -6,7 +6,7 @@ import android.app.NotificationManager;
 
 public class App extends Application {
 
-    public static final String FCM_CHANNEL_ID = "FCM_CHANNEL_ID";
+    public static final String FCM_CHANNEL_ID = "upgrade_to_pro";
 
     @Override
     public void onCreate() {

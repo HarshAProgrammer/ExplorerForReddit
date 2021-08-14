@@ -71,8 +71,6 @@ public class ViewImgurImageFragment extends Fragment {
     public static final String EXTRA_IMGUR_IMAGES = "EII";
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseDatabase firebaseDatabase;
 
     @BindView(R.id.progress_bar_view_imgur_image_fragment)
     ProgressBar progressBar;
@@ -260,11 +258,10 @@ public class ViewImgurImageFragment extends Fragment {
 
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference();
-            firebaseDatabase = FirebaseDatabase.getInstance();
 
 
             storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

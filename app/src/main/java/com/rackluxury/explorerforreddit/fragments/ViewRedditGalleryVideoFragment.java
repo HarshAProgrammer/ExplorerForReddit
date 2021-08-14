@@ -71,8 +71,6 @@ public class ViewRedditGalleryVideoFragment extends Fragment {
     private static final String POSITION_STATE = "PS";
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseDatabase firebaseDatabase;
     @BindView(R.id.player_view_view_reddit_gallery_video_fragment)
     PlayerView videoPlayerView;
     @BindView(R.id.mute_exo_playback_control_view)
@@ -203,11 +201,10 @@ public class ViewRedditGalleryVideoFragment extends Fragment {
     private void download() {
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference();
-            firebaseDatabase = FirebaseDatabase.getInstance();
 
 
             storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

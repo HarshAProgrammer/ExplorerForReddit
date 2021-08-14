@@ -94,8 +94,6 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
     private boolean isDownloading = false;
     private boolean isActionBarHidden = false;
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseDatabase firebaseDatabase;
 
     public ViewRedditGalleryImageOrGifFragment() {
         // Required empty public constructor
@@ -292,11 +290,10 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
     private void download() {
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference();
-            firebaseDatabase = FirebaseDatabase.getInstance();
 
 
             storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

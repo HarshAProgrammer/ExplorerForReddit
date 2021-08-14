@@ -109,8 +109,6 @@ public class ViewImageOrGifActivity extends AppCompatActivity implements SetAsWa
     private String mSubredditName;
     private boolean isGif = true;
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -356,11 +354,10 @@ public class ViewImageOrGifActivity extends AppCompatActivity implements SetAsWa
 
     private void download() {
 
-          firebaseAuth = FirebaseAuth.getInstance();
+          FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference();
-            firebaseDatabase = FirebaseDatabase.getInstance();
 
 
             storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

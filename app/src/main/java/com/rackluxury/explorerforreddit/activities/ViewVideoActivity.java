@@ -55,11 +55,22 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.rackluxury.explorerforreddit.FetchGfycatOrRedgifsVideoLinks;
+import com.rackluxury.explorerforreddit.Infinity;
+import com.rackluxury.explorerforreddit.R;
+import com.rackluxury.explorerforreddit.apis.VReddIt;
+import com.rackluxury.explorerforreddit.font.ContentFontFamily;
+import com.rackluxury.explorerforreddit.font.FontFamily;
+import com.rackluxury.explorerforreddit.font.TitleFontFamily;
+import com.rackluxury.explorerforreddit.post.FetchPost;
+import com.rackluxury.explorerforreddit.post.Post;
+import com.rackluxury.explorerforreddit.services.DownloadMediaService;
+import com.rackluxury.explorerforreddit.services.DownloadRedditVideoService;
+import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
+import com.rackluxury.explorerforreddit.utils.Utils;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 import com.thefuntasty.hauler.DragDirection;
@@ -75,19 +86,6 @@ import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.rackluxury.explorerforreddit.FetchGfycatOrRedgifsVideoLinks;
-import com.rackluxury.explorerforreddit.Infinity;
-import com.rackluxury.explorerforreddit.R;
-import com.rackluxury.explorerforreddit.apis.VReddIt;
-import com.rackluxury.explorerforreddit.font.ContentFontFamily;
-import com.rackluxury.explorerforreddit.font.FontFamily;
-import com.rackluxury.explorerforreddit.font.TitleFontFamily;
-import com.rackluxury.explorerforreddit.post.FetchPost;
-import com.rackluxury.explorerforreddit.post.Post;
-import com.rackluxury.explorerforreddit.services.DownloadMediaService;
-import com.rackluxury.explorerforreddit.services.DownloadRedditVideoService;
-import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
-import com.rackluxury.explorerforreddit.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -148,9 +146,6 @@ public class ViewVideoActivity extends AppCompatActivity {
     Executor mExecutor;
     @Inject
     SimpleCache mSimpleCache;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseDatabase firebaseDatabase;
     private Uri mVideoUri;
     private SimpleExoPlayer player;
     private DefaultTrackSelector trackSelector;
@@ -630,74 +625,70 @@ public class ViewVideoActivity extends AppCompatActivity {
 
     private void download() {
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference storageReference = firebaseStorage.getReference();
-            firebaseDatabase = FirebaseDatabase.getInstance();
-
-
-            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    isDownloading = false;
-
-                    Intent intent;
-                    if (videoType != VIDEO_TYPE_NORMAL) {
-                        intent = new Intent(ViewVideoActivity.this, DownloadMediaService.class);
-                        intent.putExtra(DownloadMediaService.EXTRA_URL, videoDownloadUrl);
-                        intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_VIDEO);
-                        intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, videoFileName);
-                        intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, subredditName);
-                    } else {
-                        intent = new Intent(ViewVideoActivity.this, DownloadRedditVideoService.class);
-                        intent.putExtra(DownloadRedditVideoService.EXTRA_VIDEO_URL, videoDownloadUrl);
-                        intent.putExtra(DownloadRedditVideoService.EXTRA_POST_ID, id);
-                        intent.putExtra(DownloadRedditVideoService.EXTRA_SUBREDDIT, subredditName);
-                    }
-                    ContextCompat.startForegroundService(ViewVideoActivity.this, intent);
-                    Toast.makeText(ViewVideoActivity.this, R.string.download_started, Toast.LENGTH_SHORT).show();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
 
 
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                isDownloading = false;
+
+                Intent intent;
+                if (videoType != VIDEO_TYPE_NORMAL) {
+                    intent = new Intent(ViewVideoActivity.this, DownloadMediaService.class);
+                    intent.putExtra(DownloadMediaService.EXTRA_URL, videoDownloadUrl);
+                    intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_VIDEO);
+                    intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, videoFileName);
+                    intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, subredditName);
+                } else {
+                    intent = new Intent(ViewVideoActivity.this, DownloadRedditVideoService.class);
+                    intent.putExtra(DownloadRedditVideoService.EXTRA_VIDEO_URL, videoDownloadUrl);
+                    intent.putExtra(DownloadRedditVideoService.EXTRA_POST_ID, id);
+                    intent.putExtra(DownloadRedditVideoService.EXTRA_SUBREDDIT, subredditName);
                 }
-            });
-            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
-                    new FancyGifDialog.Builder(ViewVideoActivity.this)
-                            .setTitle("Upgrade to pro.")
-                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
-                            .setTitleTextColor(R.color.colorHeadline)
-                            .setDescriptionTextColor(R.color.colorDescription)
-                            .setNegativeBtnText("Cancel")
-                            .setPositiveBtnBackground(R.color.colorYes)
-                            .setPositiveBtnText("Ok")
-                            .setNegativeBtnBackground(R.color.colorNo)
-                            .setGifResource(R.drawable.premium_gif)
-                            .isCancellable(true)
-                            .OnPositiveClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                    Intent intent = new Intent(ViewVideoActivity.this, PremiumActivity.class);
-                                    startActivity(intent);
-                                }
-                            })
-                            .OnNegativeClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            })
-                            .build();
+                ContextCompat.startForegroundService(ViewVideoActivity.this, intent);
+                Toast.makeText(ViewVideoActivity.this, R.string.download_started, Toast.LENGTH_SHORT).show();
 
 
-                }
-            });
+            }
+        });
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                new FancyGifDialog.Builder(ViewVideoActivity.this)
+                        .setTitle("Upgrade to pro.")
+                        .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                        .setTitleTextColor(R.color.colorHeadline)
+                        .setDescriptionTextColor(R.color.colorDescription)
+                        .setNegativeBtnText("Cancel")
+                        .setPositiveBtnBackground(R.color.colorYes)
+                        .setPositiveBtnText("Ok")
+                        .setNegativeBtnBackground(R.color.colorNo)
+                        .setGifResource(R.drawable.premium_gif)
+                        .isCancellable(true)
+                        .OnPositiveClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+
+                                Intent intent = new Intent(ViewVideoActivity.this, PremiumActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+
+                            }
+                        })
+                        .build();
 
 
-
+            }
+        });
 
 
     }

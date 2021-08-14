@@ -1,11 +1,15 @@
 package com.rackluxury.explorerforreddit.activities;
 
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,6 +52,8 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -57,20 +63,10 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.rackluxury.explorerforreddit.ActivityToolbarInterface;
 import com.rackluxury.explorerforreddit.FetchSubscribedThing;
 import com.rackluxury.explorerforreddit.Infinity;
@@ -121,13 +117,26 @@ import com.rackluxury.explorerforreddit.utils.APIUtils;
 import com.rackluxury.explorerforreddit.utils.CustomThemeSharedPreferencesUtils;
 import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
 import com.rackluxury.explorerforreddit.utils.Utils;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
-import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
 
 public class MainActivity extends BaseActivity implements SortTypeSelectionCallback,
         PostTypeBottomSheetFragment.PostTypeSelectionCallback, PostLayoutBottomSheetFragment.PostLayoutSelectionCallback,
@@ -735,7 +744,7 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
             }
         });
         fab.setOnLongClickListener(view -> {
-            FABMoreOptionsBottomSheetFragment fabMoreOptionsBottomSheetFragment= new FABMoreOptionsBottomSheetFragment();
+            FABMoreOptionsBottomSheetFragment fabMoreOptionsBottomSheetFragment = new FABMoreOptionsBottomSheetFragment();
             Bundle bundle = new Bundle();
             bundle.putBoolean(FABMoreOptionsBottomSheetFragment.EXTRA_ANONYMOUS_MODE, mAccessToken == null);
             fabMoreOptionsBottomSheetFragment.setArguments(bundle);
@@ -840,10 +849,10 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                     public void onAccountClick(String accountName) {
                         SwitchAccount.switchAccount(mRedditDataRoomDatabase, mCurrentAccountSharedPreferences,
                                 mExecutor, new Handler(), accountName, newAccount -> {
-                            Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        });
+                                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                });
                     }
                 });
         adapter.setInboxCount(inboxCount);
@@ -1034,21 +1043,21 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
         if (!mFetchUserInfoSuccess) {
             FetchUserData.fetchUserData(mRedditDataRoomDatabase, mOauthRetrofit, mAccessToken,
                     mAccountName, new FetchUserData.FetchUserDataListener() {
-                @Override
-                public void onFetchUserDataSuccess(UserData userData, int inboxCount) {
-                    MainActivity.this.inboxCount = inboxCount;
-                    mAccountName = userData.getName();
-                    mFetchUserInfoSuccess = true;
-                    if (adapter != null) {
-                        adapter.setInboxCount(inboxCount);
-                    }
-                }
+                        @Override
+                        public void onFetchUserDataSuccess(UserData userData, int inboxCount) {
+                            MainActivity.this.inboxCount = inboxCount;
+                            mAccountName = userData.getName();
+                            mFetchUserInfoSuccess = true;
+                            if (adapter != null) {
+                                adapter.setInboxCount(inboxCount);
+                            }
+                        }
 
-                @Override
-                public void onFetchUserDataFailed() {
-                    mFetchUserInfoSuccess = false;
-                }
-            });
+                        @Override
+                        public void onFetchUserDataFailed() {
+                            mFetchUserInfoSuccess = false;
+                        }
+                    });
             /*FetchMyInfo.fetchAccountInfo(mOauthRetrofit, mRedditDataRoomDatabase, mAccessToken,
                     new FetchMyInfo.FetchMyInfoListener() {
                         @Override
@@ -1124,32 +1133,127 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
             loadUserData();
             return true;
         } else if (itemId == R.id.action_lazy_mode_main_activity) {
-            MenuItem lazyModeItem = mMenu.findItem(R.id.action_lazy_mode_main_activity);
-            if (isInLazyMode) {
-                sectionsPagerAdapter.stopLazyMode();
-                isInLazyMode = false;
-                lazyModeItem.setTitle(R.string.action_start_lazy_mode);
-                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-                collapsingToolbarLayout.setLayoutParams(params);
-            } else {
-                if (sectionsPagerAdapter.startLazyMode()) {
-                    isInLazyMode = true;
-                    lazyModeItem.setTitle(R.string.action_stop_lazy_mode);
-                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL);
-                    collapsingToolbarLayout.setLayoutParams(params);
+
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+                    MenuItem lazyModeItem = mMenu.findItem(R.id.action_lazy_mode_main_activity);
+                    if (isInLazyMode) {
+                        sectionsPagerAdapter.stopLazyMode();
+                        isInLazyMode = false;
+                        lazyModeItem.setTitle(R.string.action_start_lazy_mode);
+                        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+                        collapsingToolbarLayout.setLayoutParams(params);
+                    } else {
+                        if (sectionsPagerAdapter.startLazyMode()) {
+                            isInLazyMode = true;
+                            lazyModeItem.setTitle(R.string.action_stop_lazy_mode);
+                            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL);
+                            collapsingToolbarLayout.setLayoutParams(params);
+                        }
+                    }
+
                 }
-            }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                    new FancyGifDialog.Builder(MainActivity.this)
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(MainActivity.this, PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
+
+
+
             return true;
         } else if (itemId == R.id.action_change_post_layout_main_activity) {
-            PostLayoutBottomSheetFragment postLayoutBottomSheetFragment = new PostLayoutBottomSheetFragment();
-            postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
+
+
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+
+                    PostLayoutBottomSheetFragment postLayoutBottomSheetFragment = new PostLayoutBottomSheetFragment();
+                    postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+                }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                    new FancyGifDialog.Builder(MainActivity.this)
+                            .setTitle("Upgrade to pro.")
+                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setTitleTextColor(R.color.colorHeadline)
+                            .setDescriptionTextColor(R.color.colorDescription)
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnBackground(R.color.colorYes)
+                            .setPositiveBtnText("Ok")
+                            .setNegativeBtnBackground(R.color.colorNo)
+                            .setGifResource(R.drawable.premium_gif)
+                            .isCancellable(true)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                    Intent intent = new Intent(MainActivity.this, PremiumActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .build();
+
+
+                }
+            });
             return true;
         }
         return false;
     }
 
     @Override
-    public void onBackPressed() {;
+    public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

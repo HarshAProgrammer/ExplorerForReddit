@@ -81,8 +81,6 @@ public class ViewImgurVideoFragment extends Fragment {
     private boolean isMute = false;
     private boolean isDownloading = false;
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseDatabase firebaseDatabase;
     @Inject
     @Named("default")
     SharedPreferences mSharedPreferences;
@@ -200,11 +198,10 @@ public class ViewImgurVideoFragment extends Fragment {
     private void download() {
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference();
-            firebaseDatabase = FirebaseDatabase.getInstance();
 
 
             storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
