@@ -210,7 +210,7 @@ public class ViewRedditGalleryVideoFragment extends Fragment {
             firebaseDatabase = FirebaseDatabase.getInstance();
 
 
-            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     isDownloading = false;
@@ -226,7 +226,7 @@ public class ViewRedditGalleryVideoFragment extends Fragment {
 
                 }
             });
-            storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");

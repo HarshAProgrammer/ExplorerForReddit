@@ -83,10 +83,10 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                         Toasty.error(PremiumActivity.this, "Try Purchasing Again", Toast.LENGTH_LONG).show();
                     } else {
                         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic("purchase_expensive");
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic("upgrade_to_pro");
 
 
-                            StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased");
+                            StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Premium");
                             Uri uri1 = Uri.parse("android.resource://com.rackluxury.explorerforreddit/drawable/upgrade_to_premium");
                             UploadTask uploadTask = imageReference1.putFile(uri1);
                             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -169,10 +169,10 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                     //now you can purchase same categories again and again
                     //Here we give coins to user.
 
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic("purchase_expensive");
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("upgrade_to_pro");
 
 
-                    StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Expensive Purchased");
+                    StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Premium");
                     Uri uri1 = Uri.parse("android.resource://com.rackluxury.explorerforreddit/drawable/upgrade_to_premium");
                     UploadTask uploadTask = imageReference1.putFile(uri1);
                     uploadTask.addOnFailureListener(new OnFailureListener() {
