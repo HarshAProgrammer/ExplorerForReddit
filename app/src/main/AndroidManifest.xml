@@ -10,6 +10,7 @@
     </queries>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
@@ -41,16 +42,20 @@
 
         <activity
             android:name="com.rackluxury.explorerforreddit.activities.LoginOrRegisterActivity"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:theme="@style/AppThemeLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.rackluxury.explorerforreddit.activities.RegistrationActivity" />
-        <activity android:name="com.rackluxury.explorerforreddit.activities.LoginActivity" />
-        <activity android:name="com.rackluxury.explorerforreddit.activities.ForgotPassword" />
+        <activity android:name="com.rackluxury.explorerforreddit.activities.RegistrationActivity"
+            android:theme="@style/AppThemeLogin"/>
+        <activity android:name="com.rackluxury.explorerforreddit.activities.LoginActivity"
+            android:theme="@style/AppThemeLogin"/>
+        <activity android:name="com.rackluxury.explorerforreddit.activities.ForgotPassword"
+            android:theme="@style/AppThemeLogin"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
