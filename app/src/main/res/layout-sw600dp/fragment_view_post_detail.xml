@@ -18,7 +18,7 @@
             android:clickable="true"
             android:focusable="true">
 
-            <ml.docilealligator.infinityforreddit.customviews.CustomToroContainer
+            <com.rackluxury.explorerforreddit.customviews.CustomToroContainer
                 android:id="@+id/post_detail_recycler_view_view_post_detail_fragment"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

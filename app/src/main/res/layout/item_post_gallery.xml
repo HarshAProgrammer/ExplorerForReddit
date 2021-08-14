@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-    <ml.docilealligator.infinityforreddit.customviews.AspectRatioGifImageView
+    <com.rackluxury.explorerforreddit.customviews.AspectRatioGifImageView
         android:id="@+id/image_view_item_post_gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

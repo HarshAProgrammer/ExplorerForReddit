@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ml.docilealligator.infinityforreddit">
+    package="com.rackluxury.explorerforreddit">
 
     <queries>
         <intent>
@@ -26,7 +26,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
-        android:name=".Infinity"
+        android:name="com.rackluxury.explorerforreddit.Infinity"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/application_name"
@@ -36,11 +36,11 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
-            android:name=".activities.PremiumActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PremiumActivity"
             android:exported="true" />
 
         <activity
-            android:name=".activities.LoginOrRegisterActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.LoginOrRegisterActivity"
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,9 +48,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.RegistrationActivity" />
-        <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.ForgotPassword" />
+        <activity android:name="com.rackluxury.explorerforreddit.activities.RegistrationActivity" />
+        <activity android:name="com.rackluxury.explorerforreddit.activities.LoginActivity" />
+        <activity android:name="com.rackluxury.explorerforreddit.activities.ForgotPassword" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -73,172 +73,172 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TrendingActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.TrendingActivity"
             android:label="@string/trending_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.PostGalleryActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PostGalleryActivity"
             android:label="@string/post_gallery_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.RPANActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.RPANActivity"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:label="@string/rpan_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.TranslucentStatusBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activities.LockScreenActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.LockScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.AnonymousSubscriptionsActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.AnonymousSubscriptionsActivity"
             android:label="@string/subscriptions"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.WebViewActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.WebViewActivity"
             android:label=""
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.SuicidePreventionActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SuicidePreventionActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.MultiredditSelectionActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.MultiredditSelectionActivity"
             android:label="@string/multireddit_selection_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.SearchUsersResultActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SearchUsersResultActivity"
             android:label="@string/search_users_result_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.PostFilterUsageListingActivity"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PostFilterUsageListingActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.PostFilterPreferenceActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PostFilterPreferenceActivity"
             android:label="@string/post_filter_preference_activity_label"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.CustomizePostFilterActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.CustomizePostFilterActivity"
             android:label="@string/customize_post_filter_activity_label"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.FetchRandomSubredditOrPostActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.FetchRandomSubredditOrPostActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.GiveAwardActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.GiveAwardActivity"
             android:label="@string/give_award_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.SelectUserFlairActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SelectUserFlairActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.FullMarkdownActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.FullMarkdownActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.SubmitCrosspostActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SubmitCrosspostActivity"
             android:label="@string/submit_crosspost_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
         <service
-            android:name=".services.DownloadMediaService"
+            android:name="com.rackluxury.explorerforreddit.services.DownloadMediaService"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name=".activities.ViewRedditGalleryActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewRedditGalleryActivity"
             android:configChanges="orientation|screenSize|layoutDirection"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Draggable" />
         <activity
-            android:name=".activities.SendPrivateMessageActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SendPrivateMessageActivity"
             android:label="@string/send_private_message_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
         <service
-            android:name=".services.DownloadRedditVideoService"
+            android:name="com.rackluxury.explorerforreddit.services.DownloadRedditVideoService"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name=".activities.ViewPrivateMessagesActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewPrivateMessagesActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.ViewImgurMediaActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewImgurMediaActivity"
             android:configChanges="orientation|screenSize|layoutDirection"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Draggable" />
         <activity
-            android:name=".activities.ReportActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ReportActivity"
             android:label="@string/report_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.SelectedSubredditsAndUsersActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SelectedSubredditsAndUsersActivity"
             android:label="@string/selected_subeddits_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.EditMultiRedditActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.EditMultiRedditActivity"
             android:label="@string/edit_multi_reddit_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.CustomThemePreviewActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.CustomThemePreviewActivity"
             android:label="@string/theme_preview_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.SlidableWithTranslucentWindow" />
         <activity
-            android:name=".activities.CustomThemeListingActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.CustomThemeListingActivity"
             android:label="@string/custom_theme_listing_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.CustomizeThemeActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.CustomizeThemeActivity"
             android:label="@string/customize_theme_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.SubredditMultiselectionActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SubredditMultiselectionActivity"
             android:label="@string/subreddit_multiselection_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.CreateMultiRedditActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.CreateMultiRedditActivity"
             android:label="@string/create_multi_reddit_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.ViewMultiRedditDetailActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewMultiRedditDetailActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.AccountSavedThingActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.AccountSavedThingActivity"
             android:label="@string/account_saved_thing_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
-        <activity android:name=".activities.ShareDataResolverActivity">
+        <activity android:name="com.rackluxury.explorerforreddit.activities.ShareDataResolverActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -262,41 +262,41 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SettingsActivity"
             android:label="@string/settings_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/PreferenceActivityTheme" />
         <activity
-            android:name=".activities.InboxActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.InboxActivity"
             android:label="@string/view_message_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.AccountPostsActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.AccountPostsActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.EditCommentActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.EditCommentActivity"
             android:label="@string/edit_comment_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.EditPostActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.EditPostActivity"
             android:label="@string/edit_post_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.FilteredPostsActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.FilteredPostsActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.SearchSubredditsResultActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SearchSubredditsResultActivity"
             android:label="@string/search_subreddits_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
-        <activity android:name=".activities.LinkResolverActivity">
+        <activity android:name="com.rackluxury.explorerforreddit.activities.LinkResolverActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -372,98 +372,98 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SearchActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SearchActivity"
             android:label="@string/search_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activities.RulesActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.RulesActivity"
             android:label="@string/rules_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.PostVideoActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PostVideoActivity"
             android:label="@string/post_video_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.PostImageActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PostImageActivity"
             android:label="@string/post_image_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.PostLinkActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PostLinkActivity"
             android:label="@string/post_link_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.SubscribedThingListingActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SubscribedThingListingActivity"
             android:label="@string/subscriptions"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.SubredditSelectionActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SubredditSelectionActivity"
             android:label="@string/subreddit_selection_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.PostTextActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.PostTextActivity"
             android:label="@string/post_text_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.CommentActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.CommentActivity"
             android:label="@string/comment_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.SearchResultActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.SearchResultActivity"
             android:label="@string/search_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:label="@string/application_name"
             android:theme="@style/AppTheme.Launcher"
             android:windowSoftInputMode="adjustPan"/>
 
         <activity
-            android:name=".activities.RedditLoginActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.RedditLoginActivity"
             android:label="@string/login_activity_label"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable" />
         <activity
-            android:name=".activities.ViewImageOrGifActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewImageOrGifActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.SlidableWithActionBar" />
         <activity
-            android:name=".activities.ViewVideoActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewVideoActivity"
             android:configChanges="orientation|screenSize|layoutDirection"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Draggable" />
         <activity
-            android:name=".activities.ViewPostDetailActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewPostDetailActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.Slidable"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".activities.ViewSubredditDetailActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewSubredditDetailActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.SlidableWithTranslucentWindow" />
         <activity
-            android:name=".activities.ViewUserDetailActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name="com.rackluxury.explorerforreddit.activities.ViewUserDetailActivity"
+            android:parentActivityName="com.rackluxury.explorerforreddit.activities.MainActivity"
             android:theme="@style/AppTheme.SlidableWithTranslucentWindow" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="ml.docilealligator.infinityforreddit.provider"
+            android:authorities="com.rackluxury.explorerforreddit.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -481,11 +481,11 @@
         </provider>
 
         <service
-            android:name=".services.SubmitPostService"
+            android:name="com.rackluxury.explorerforreddit.services.SubmitPostService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".services.MaterialYouService"
+            android:name="com.rackluxury.explorerforreddit.services.MaterialYouService"
             android:exported="false" />
     </application>
 

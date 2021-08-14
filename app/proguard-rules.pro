@@ -9,7 +9,7 @@
 ## Preferences reflection
 -keep class * extends androidx.preference.PreferenceFragmentCompat
 
--keep class ml.docilealligator.infinityforreddit.settings.FontPreviewFragment { *; }
+-keep class com.rackluxury.explorerforreddit.settings.FontPreviewFragment { *; }
 
 ## EventBus Rules
 -keepattributes *Annotation*
@@ -62,9 +62,9 @@
 #-keep class com.google.gson.stream.** { *; }
 
 # Application classes that will be serialized/deserialized over Gson
--keep class ml.docilealligator.infinityforreddit.customtheme.CustomTheme { <fields>; }
--keep class ml.docilealligator.infinityforreddit.multireddit.MultiRedditJSONModel { <fields>; }
--keep class ml.docilealligator.infinityforreddit.multireddit.SubredditInMultiReddit { <fields>; }
+-keep class com.rackluxury.explorerforreddit.customtheme.CustomTheme { <fields>; }
+-keep class com.rackluxury.explorerforreddit.multireddit.MultiRedditJSONModel { <fields>; }
+-keep class com.rackluxury.explorerforreddit.multireddit.SubredditInMultiReddit { <fields>; }
 
 # Prevent proguard from stripping interface information from TypeAdapter, TypeAdapterFactory,
 # JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)

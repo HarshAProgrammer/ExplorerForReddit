@@ -1,0 +1,10 @@
+package com.rackluxury.explorerforreddit.apis;
+
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Url;
+
+public interface VReddIt {
+    @GET()
+    Call<String> getRedirectUrl(@Url String vReddItUrl);
+}
