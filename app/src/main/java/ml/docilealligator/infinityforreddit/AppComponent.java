@@ -22,7 +22,7 @@ import ml.docilealligator.infinityforreddit.activities.GiveAwardActivity;
 import ml.docilealligator.infinityforreddit.activities.InboxActivity;
 import ml.docilealligator.infinityforreddit.activities.LinkResolverActivity;
 import ml.docilealligator.infinityforreddit.activities.LockScreenActivity;
-import ml.docilealligator.infinityforreddit.activities.LoginActivity;
+import ml.docilealligator.infinityforreddit.activities.RedditLoginActivity;
 import ml.docilealligator.infinityforreddit.activities.MainActivity;
 import ml.docilealligator.infinityforreddit.activities.MultiredditSelectionActivity;
 import ml.docilealligator.infinityforreddit.activities.PostFilterPreferenceActivity;
@@ -100,7 +100,7 @@ import ml.docilealligator.infinityforreddit.settings.VideoPreferenceFragment;
 public interface AppComponent {
     void inject(MainActivity mainActivity);
 
-    void inject(LoginActivity loginActivity);
+    void inject(RedditLoginActivity redditLoginActivity);
 
     void inject(PostFragment postFragment);
 

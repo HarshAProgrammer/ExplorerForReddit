@@ -59,15 +59,12 @@ import ml.docilealligator.infinityforreddit.ImgurMedia;
 import ml.docilealligator.infinityforreddit.Infinity;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.SetAsWallpaperCallback;
-import ml.docilealligator.infinityforreddit.activities.LoginActivity;
+import ml.docilealligator.infinityforreddit.activities.RedditLoginActivity;
 import ml.docilealligator.infinityforreddit.activities.PremiumActivity;
-import ml.docilealligator.infinityforreddit.activities.ViewImageOrGifActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewImgurMediaActivity;
-import ml.docilealligator.infinityforreddit.activities.ViewVideoActivity;
 import ml.docilealligator.infinityforreddit.asynctasks.SaveBitmapImageToFile;
 import ml.docilealligator.infinityforreddit.bottomsheetfragments.SetAsWallpaperBottomSheetFragment;
 import ml.docilealligator.infinityforreddit.services.DownloadMediaService;
-import ml.docilealligator.infinityforreddit.services.DownloadRedditVideoService;
 
 public class ViewImgurImageFragment extends Fragment {
 
@@ -335,7 +332,7 @@ public class ViewImgurImageFragment extends Fragment {
 
 
         } else {
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            Intent intent = new Intent(getActivity(), RedditLoginActivity.class);
             startActivity(intent);
         }
 

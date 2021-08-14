@@ -73,6 +73,12 @@ dependencies {
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
     implementation 'com.github.Shashank02051997:FancyGifDialog-Android:1.4'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
+    implementation 'com.facebook.android:facebook-login:5.15.3'
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    implementation 'com.royrodriguez:transitionbutton:0.2.0'
+    implementation 'com.github.mohammadatif:Animatoo:master'
+
 
 
 /** ExoPlayer **/

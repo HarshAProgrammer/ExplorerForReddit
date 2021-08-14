@@ -1,291 +1,409 @@
 package ml.docilealligator.infinityforreddit.activities;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.InflateException;
+import android.util.Patterns;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.r0adkll.slidr.Slidr;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import ml.docilealligator.infinityforreddit.FetchMyInfo;
-import ml.docilealligator.infinityforreddit.Infinity;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import ml.docilealligator.infinityforreddit.R;
-import ml.docilealligator.infinityforreddit.RedditDataRoomDatabase;
-import ml.docilealligator.infinityforreddit.apis.RedditAPI;
-import ml.docilealligator.infinityforreddit.asynctasks.ParseAndInsertNewAccount;
-import ml.docilealligator.infinityforreddit.customtheme.CustomThemeWrapper;
-import ml.docilealligator.infinityforreddit.utils.APIUtils;
-import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
-import ml.docilealligator.infinityforreddit.utils.Utils;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
-public class LoginActivity extends BaseActivity {
+import es.dmoral.toasty.Toasty;
 
-    private static final String ENABLE_DOM_STATE = "EDS";
 
-    @BindView(R.id.coordinator_layout_login_activity)
-    CoordinatorLayout coordinatorLayout;
-    @BindView(R.id.appbar_layout_login_activity)
-    AppBarLayout appBarLayout;
-    @BindView(R.id.toolbar_login_activity)
-    Toolbar toolbar;
-    @BindView(R.id.two_fa_infO_text_view_login_activity)
-    TextView twoFAInfoTextView;
-    @BindView(R.id.webview_login_activity)
-    WebView webView;
-    @BindView(R.id.fab_login_activity)
-    FloatingActionButton fab;
-    @Inject
-    @Named("no_oauth")
-    Retrofit mRetrofit;
-    @Inject
-    @Named("oauth")
-    Retrofit mOauthRetrofit;
-    @Inject
-    RedditDataRoomDatabase mRedditDataRoomDatabase;
-    @Inject
-    @Named("default")
-    SharedPreferences mSharedPreferences;
-    @Inject
-    @Named("current_account")
-    SharedPreferences mCurrentAccountSharedPreferences;
-    @Inject
-    CustomThemeWrapper mCustomThemeWrapper;
-    @Inject
-    Executor mExecutor;
-    private String authCode;
-    private boolean enableDom = false;
+public class LoginActivity extends AppCompatActivity implements
+        GestureDetector.OnGestureListener {
+
+
+    private CallbackManager mCallbackManager;
+    private static final String TAG = "FacebookAuthentication";
+    private FirebaseAuth.AuthStateListener authStateListener;
+
+    private TextInputLayout textInputEmail;
+    private TextInputLayout textInputPassword;
+    private EditText loginEmail;
+    private EditText loginPassword;
+    private TextView Info;
+    private Button Login;
+    private int counter = 5;
+    private TextView userRegistration;
+    private FirebaseAuth firebaseAuth;
+    private TextView forgotPassword;
+
+
+    public static final int SWIPE_THRESHOLD = 100;
+    public static final int SWIPE_VELOCITY_THRESHOLD = 100;
+    private GestureDetector gestureDetector;
+    private SpinKitView spinKitView;
+
+
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReference;
+    private FirebaseDatabase firebaseDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ((Infinity) getApplication()).getAppComponent().inject(this);
-
-        setImmersiveModeNotApplicable();
-
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
 
-        try {
-            setContentView(R.layout.activity_login);
-        } catch (InflateException ie) {
-            Log.e("LoginActivity", "Failed to inflate LoginActivity: " + ie.getMessage());
-            Toast.makeText(LoginActivity.this, R.string.no_system_webview_error, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        textInputEmail = findViewById(R.id.login_email_layout);
+        textInputPassword = findViewById(R.id.login_password_layout);
+        loginEmail = findViewById(R.id.etEmailLogin);
+        loginPassword = findViewById(R.id.etPasswordLogin);
+        Login = findViewById(R.id.btnLogin);
+        forgotPassword = findViewById(R.id.tvForgotPasswordLogin);
+        Info = findViewById(R.id.tvInfoLogin);
+        Info.setText(getResources().getString(R.string.info_old_login));
+        userRegistration = findViewById(R.id.tvRegisterLogin);
+        LoginButton facebookLoginButton = findViewById(R.id.facebook_login_button);
+        gestureDetector = new GestureDetector(LoginActivity.this, this);
+        spinKitView = findViewById(R.id.spin_kit_login);
 
-        ButterKnife.bind(this);
 
-        applyCustomTheme();
 
-        if (mSharedPreferences.getBoolean(SharedPreferencesUtils.SWIPE_RIGHT_TO_GO_BACK, true)) {
-            Slidr.attach(this);
-        }
+        firebaseAuth = FirebaseAuth.getInstance();
+        mCallbackManager = CallbackManager.Factory.create();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        facebookLoginButton.setReadPermissions("email", "public_profile");
 
-        setSupportActionBar(toolbar);
+        facebookLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (savedInstanceState != null) {
-            enableDom = savedInstanceState.getBoolean(ENABLE_DOM_STATE);
-        }
-
-        fab.setOnClickListener(view -> {
-            new MaterialAlertDialogBuilder(this, R.style.MaterialAlertDialogTheme)
-                    .setTitle(R.string.have_trouble_login_title)
-                    .setMessage(R.string.have_trouble_login_message)
-                    .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                        enableDom = !enableDom;
-                        ActivityCompat.recreate(this);
-                    })
-                    .setNegativeButton(R.string.no, null)
-                    .show();
-        });
-
-        if (enableDom) {
-            twoFAInfoTextView.setVisibility(View.GONE);
-        }
-
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(enableDom);
-
-        Uri baseUri = Uri.parse(APIUtils.OAUTH_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-        uriBuilder.appendQueryParameter(APIUtils.CLIENT_ID_KEY, APIUtils.CLIENT_ID);
-        uriBuilder.appendQueryParameter(APIUtils.RESPONSE_TYPE_KEY, APIUtils.RESPONSE_TYPE);
-        uriBuilder.appendQueryParameter(APIUtils.STATE_KEY, APIUtils.STATE);
-        uriBuilder.appendQueryParameter(APIUtils.REDIRECT_URI_KEY, APIUtils.REDIRECT_URI);
-        uriBuilder.appendQueryParameter(APIUtils.DURATION_KEY, APIUtils.DURATION);
-        uriBuilder.appendQueryParameter(APIUtils.SCOPE_KEY, APIUtils.SCOPE);
-
-        String url = uriBuilder.toString();
-
-        CookieManager.getInstance().removeAllCookies(aBoolean -> {
-        });
-
-        webView.loadUrl(url);
-        webView.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.contains("&code=") || url.contains("?code=")) {
-                    Uri uri = Uri.parse(url);
-                    String state = uri.getQueryParameter("state");
-                    if (state.equals(APIUtils.STATE)) {
-                        authCode = uri.getQueryParameter("code");
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "onSuccess" + loginResult);
+                handleFacebookToken(loginResult.getAccessToken());
 
-                        Map<String, String> params = new HashMap<>();
-                        params.put(APIUtils.GRANT_TYPE_KEY, "authorization_code");
-                        params.put("code", authCode);
-                        params.put("redirect_uri", APIUtils.REDIRECT_URI);
+            }
 
-                        RedditAPI api = mRetrofit.create(RedditAPI.class);
-                        Call<String> accessTokenCall = api.getAccessToken(APIUtils.getHttpBasicAuthHeader(), params);
-                        accessTokenCall.enqueue(new Callback<String>() {
-                            @Override
-                            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                                if (response.isSuccessful()) {
-                                    try {
-                                        String accountResponse = response.body();
-                                        if (accountResponse == null) {
-                                            //Handle error
-                                            return;
-                                        }
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "onCancel");
 
-                                        JSONObject responseJSON = new JSONObject(accountResponse);
-                                        String accessToken = responseJSON.getString(APIUtils.ACCESS_TOKEN_KEY);
-                                        String refreshToken = responseJSON.getString(APIUtils.REFRESH_TOKEN_KEY);
 
-                                        FetchMyInfo.fetchAccountInfo(mOauthRetrofit, mRedditDataRoomDatabase,
-                                                accessToken, new FetchMyInfo.FetchMyInfoListener() {
-                                                    @Override
-                                                    public void onFetchMyInfoSuccess(String name, String profileImageUrl, String bannerImageUrl, int karma) {
-                                                        mCurrentAccountSharedPreferences.edit().putString(SharedPreferencesUtils.ACCESS_TOKEN, accessToken)
-                                                                .putString(SharedPreferencesUtils.ACCOUNT_NAME, name)
-                                                                .putString(SharedPreferencesUtils.ACCOUNT_IMAGE_URL, profileImageUrl).apply();
-                                                        ParseAndInsertNewAccount.parseAndInsertNewAccount(mExecutor, new Handler(), name, accessToken, refreshToken, profileImageUrl, bannerImageUrl,
-                                                                karma, authCode, mRedditDataRoomDatabase.accountDao(),
-                                                                () -> {
-                                                                    Intent resultIntent = new Intent();
-                                                                    setResult(Activity.RESULT_OK, resultIntent);
-                                                                    finish();
-                                                                });
-                                                    }
+            }
 
-                                                    @Override
-                                                    public void onFetchMyInfoFailed(boolean parseFailed) {
-                                                        if (parseFailed) {
-                                                            Toast.makeText(LoginActivity.this, R.string.parse_user_info_error, Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Toast.makeText(LoginActivity.this, R.string.cannot_fetch_user_info, Toast.LENGTH_SHORT).show();
-                                                        }
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "onError" + error);
 
-                                                        finish();
-                                                    }
-                                        });
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(LoginActivity.this, R.string.parse_json_response_error, Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                } else {
-                                    Toast.makeText(LoginActivity.this, R.string.retrieve_token_error, Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
-                            }
+            }
+        });
 
-                            @Override
-                            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                                Toast.makeText(LoginActivity.this, R.string.retrieve_token_error, Toast.LENGTH_SHORT).show();
-                                t.printStackTrace();
-                                finish();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(LoginActivity.this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
 
-                } else if (url.contains("error=access_denied")) {
-                    Toast.makeText(LoginActivity.this, R.string.access_denied, Toast.LENGTH_SHORT).show();
-                    finish();
                 } else {
-                    view.loadUrl(url);
+                }
+            }
+        };
+        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken == null) ;
+                firebaseAuth.signOut();
+            }
+        };
+
+
+        loadLoginFunctionality();
+        loginEmail.addTextChangedListener(loginTextWatcher);
+        loginPassword.addTextChangedListener(loginTextWatcher);
+
+
+    }
+    private TextWatcher loginTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String usernameInput = loginEmail.getText().toString().trim();
+            String passwordInput = loginPassword.getText().toString().trim();
+            Login.setEnabled(!usernameInput.isEmpty() && !passwordInput.isEmpty());
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
+
+    private void handleFacebookToken(AccessToken token) {
+        Log.d(TAG, "handleFacebookToken" + token);
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "sign in with credential: successful");
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    setFacebookLoginDialogue();
+                    Handler handler = new Handler();
+                    int TRANSITION_SCREEN_LOADING_TIME = 4500;
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                            Intent openHomeActivityFromLogin = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(openHomeActivityFromLogin);
+                            Toasty.success(LoginActivity.this, "Facebook Login Successful", Toast.LENGTH_LONG).show();
+                            Animatoo.animateSlideUp(LoginActivity.this);
+                        }
+                    }, TRANSITION_SCREEN_LOADING_TIME);
+
+                } else {
+                    Log.d(TAG, "sign in with credential: failed", task.getException());
+                    Toasty.error(LoginActivity.this, "Facebook Authentication Failed", Toast.LENGTH_LONG).show();
+
+                    FirebaseUser user = null;
+
                 }
 
-                return true;
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
             }
         });
+
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(ENABLE_DOM_STATE, enableDom);
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(authStateListener);
     }
 
     @Override
-    public SharedPreferences getDefaultSharedPreferences() {
-        return mSharedPreferences;
+    protected void onStop() {
+        super.onStop();
+
+        if (authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
     }
 
-    @Override
-    protected CustomThemeWrapper getCustomThemeWrapper() {
-        return mCustomThemeWrapper;
+
+    private void loadLoginFunctionality() {
+        Login.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                if (validateLogin()) {
+                    spinKitView.setVisibility(View.VISIBLE);
+                    Login.setEnabled(false);
+                    validate(loginEmail.getText().toString(), loginPassword.getText().toString());
+
+                }
+            }
+        });
+
+        userRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+
+            public void onClick(View v) {
+
+                openRegistrationActivityFromLogin();
+            }
+        });
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openForgotPasswordActivityFromLogin = new Intent(LoginActivity.this, ForgotPassword.class);
+                startActivity(openForgotPasswordActivityFromLogin);
+                Animatoo.animateSlideDown(LoginActivity.this);
+
+            }
+        });
+
     }
 
-    @Override
-    protected void applyCustomTheme() {
-        coordinatorLayout.setBackgroundColor(mCustomThemeWrapper.getBackgroundColor());
-        applyAppBarLayoutAndToolbarTheme(appBarLayout, toolbar);
-        twoFAInfoTextView.setTextColor(mCustomThemeWrapper.getPrimaryTextColor());
-        Drawable infoDrawable = Utils.getTintedDrawable(this, R.drawable.ic_info_preference_24dp, mCustomThemeWrapper.getPrimaryIconColor());
-        twoFAInfoTextView.setCompoundDrawablesWithIntrinsicBounds(infoDrawable, null, null, null);
-        applyFABTheme(fab);
+
+    private boolean validateLogin() {
+        boolean result;
+
+        String emailInput = textInputEmail.getEditText().getText().toString().trim();
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
+            textInputEmail.setError("Please enter a valid email address");
+            result = false;
+        }else if (null == activeNetwork) {
+            textInputEmail.setError(null);
+            setNoInternetDialogue();
+            result = false;
+        } else {
+            textInputEmail.setError(null);
+            result = true;
+        }
+        return result;
+
+
+    }
+
+    private void setNoInternetDialogue() {
+        final NoInternetDialogue noInternetDialogue = new NoInternetDialogue(LoginActivity.this);
+        noInternetDialogue.startNoInternetDialogue();
+        Handler handler = new Handler();
+        int TRANSITION_SCREEN_TIME = 4000;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                noInternetDialogue.dismissDialogue();
+            }
+        }, TRANSITION_SCREEN_TIME);
+    }
+
+
+    public void openRegistrationActivityFromLogin() {
+        Intent openRegistrationActivityFromLogin = new Intent(LoginActivity.this, RegistrationActivity.class);
+        startActivity(openRegistrationActivityFromLogin);
+        finish();
+        Animatoo.animateSwipeLeft(LoginActivity.this);
+
+    }
+
+    private void validate(String userEmail, String userPassword) {
+
+        Boolean result = false;
+
+        String email = loginEmail.getText().toString();
+        String password = loginPassword.getText().toString();
+
+
+        firebaseAuth.signInWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+
+                    checkEmailVerification();
+                } else {
+
+                    Toasty.error(LoginActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
+                    counter--;
+                    spinKitView.setVisibility(View.GONE);
+                    Info.setText(getResources().getString(R.string.info_new_login) + counter);
+                    if (counter == 0) {
+                        Login.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toasty.error(LoginActivity.this, "You Have Exceeded Maximum Number of Tries!", Toast.LENGTH_LONG).show();
+                                Login.setEnabled(false);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    private void checkEmailVerification() {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        boolean email_flag = user.isEmailVerified();
+        if (email_flag) {
+            spinKitView.setVisibility(View.GONE);
+            setLoginDialogue();
+            Handler handler = new Handler();
+            int TRANSITION_SCREEN_LOADING_TIME = 4500;
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Toasty.success(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
+                    finish();
+                    Intent openHomeActivityFromLogin = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(openHomeActivityFromLogin);
+                    Animatoo.animateSlideUp(LoginActivity.this);
+
+
+                }
+            }, TRANSITION_SCREEN_LOADING_TIME);
+
+        } else {
+            Login.setEnabled(false);
+            spinKitView.setVisibility(View.GONE);
+            Toasty.info(LoginActivity.this, "Verify Your Email Address", Toast.LENGTH_SHORT).show();
+            firebaseAuth.signOut();
+        }
+
+
+    }
+
+    private void setLoginDialogue() {
+        final LoginDialogue loginDialogue = new LoginDialogue(LoginActivity.this);
+        loginDialogue.startLoginDialogue();
+        Handler handler = new Handler();
+        int TRANSITION_SCREEN_TIME = 4000;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loginDialogue.dismissDialogue();
+            }
+        }, TRANSITION_SCREEN_TIME);
+    }
+
+    private void setFacebookLoginDialogue() {
+        final FacebookLoginDialogue facebookLoginDialogue = new FacebookLoginDialogue(LoginActivity.this);
+        facebookLoginDialogue.startFacebookLoginDialogue();
+        Handler handler = new Handler();
+        int TRANSITION_SCREEN_TIME = 4000;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                facebookLoginDialogue.dismissDialogue();
+            }
+        }, TRANSITION_SCREEN_TIME);
     }
 
     @Override
@@ -294,6 +412,75 @@ public class LoginActivity extends BaseActivity {
             finish();
             return true;
         }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Animatoo.animateSlideLeft(LoginActivity.this);
+
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
         return false;
     }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent downEvent, MotionEvent moveEvent, float velocityX, float velocityY) {
+        boolean result = false;
+        float diffY = moveEvent.getY() - downEvent.getY();
+        float diffX = moveEvent.getX() - downEvent.getX();
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+
+            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffX > 0) {
+
+                } else {
+                    onSwipeLeft();
+                }
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    private void onSwipeLeft() {
+        finish();
+        startActivity(new Intent(LoginActivity.this, LoginOrRegisterActivity.class));
+        Animatoo.animateSlideLeft(LoginActivity.this);
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
 }
+
+

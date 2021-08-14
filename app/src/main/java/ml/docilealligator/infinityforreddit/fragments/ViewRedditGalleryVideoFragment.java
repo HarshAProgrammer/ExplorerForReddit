@@ -56,14 +56,11 @@ import javax.inject.Named;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ml.docilealligator.infinityforreddit.Infinity;
-import ml.docilealligator.infinityforreddit.activities.LoginActivity;
+import ml.docilealligator.infinityforreddit.activities.RedditLoginActivity;
 import ml.docilealligator.infinityforreddit.activities.PremiumActivity;
-import ml.docilealligator.infinityforreddit.activities.ViewImageOrGifActivity;
-import ml.docilealligator.infinityforreddit.activities.ViewVideoActivity;
 import ml.docilealligator.infinityforreddit.post.Post;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.services.DownloadMediaService;
-import ml.docilealligator.infinityforreddit.services.DownloadRedditVideoService;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
 
 public class ViewRedditGalleryVideoFragment extends Fragment {
@@ -278,7 +275,7 @@ public class ViewRedditGalleryVideoFragment extends Fragment {
 
 
         } else {
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            Intent intent = new Intent(getActivity(), RedditLoginActivity.class);
             startActivity(intent);
         }
 
