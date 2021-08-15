@@ -495,8 +495,8 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                     @Override
                     public void onSuccess(Uri uri) {
 
-                PostLayoutBottomSheetFragment postLayoutBottomSheetFragment = new PostLayoutBottomSheetFragment();
-                postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+                        PostLayoutBottomSheetFragment postLayoutBottomSheetFragment = new PostLayoutBottomSheetFragment();
+                        postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
 
 
                     }
@@ -535,9 +535,9 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                     @Override
                     public void onSuccess(Uri uri) {
 
-                if (sectionsPagerAdapter != null) {
-                    sectionsPagerAdapter.filterPosts();
-                }
+                        if (sectionsPagerAdapter != null) {
+                            sectionsPagerAdapter.filterPosts();
+                        }
 
                     }
                 });
@@ -805,9 +805,9 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                     storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                                if (sectionsPagerAdapter != null) {
-                                    sectionsPagerAdapter.filterPosts();
-                                }
+                            if (sectionsPagerAdapter != null) {
+                                sectionsPagerAdapter.filterPosts();
+                            }
                         }
                     });
                     storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
@@ -834,6 +834,10 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
             return true;
         });
         fab.setVisibility(View.VISIBLE);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
 
         adapter = new NavigationDrawerRecyclerViewAdapter(this, mSharedPreferences,
                 mNsfwAndSpoilerSharedPreferences, mNavigationDrawerSharedPreferences, mCustomThemeWrapper, mAccountName,
@@ -854,15 +858,83 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                             intent = new Intent(MainActivity.this, SubscribedThingListingActivity.class);
                             intent.putExtra(SubscribedThingListingActivity.EXTRA_SHOW_MULTIREDDITS, true);
                         } else if (stringId == R.string.rpan) {
-                            intent = new Intent(MainActivity.this, RPANActivity.class);
+
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    Intent intent = new Intent(MainActivity.this, RPANActivity.class);
+                                    startActivity(intent);
+
+                                }
+                            });
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    premiumDialogue();
+
+
+                                }
+                            });
                         } else if (stringId == R.string.trending) {
-                            intent = new Intent(MainActivity.this, TrendingActivity.class);
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    Intent intent = new Intent(MainActivity.this, TrendingActivity.class);
+                                    startActivity(intent);
+
+
+                                }
+                            });
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    premiumDialogue();
+
+
+                                }
+                            });
                         } else if (stringId == R.string.upvoted) {
-                            intent = new Intent(MainActivity.this, AccountPostsActivity.class);
-                            intent.putExtra(AccountPostsActivity.EXTRA_USER_WHERE, PostDataSource.USER_WHERE_UPVOTED);
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    Intent intent = new Intent(MainActivity.this, AccountPostsActivity.class);
+                                    intent.putExtra(AccountPostsActivity.EXTRA_USER_WHERE, PostDataSource.USER_WHERE_UPVOTED);
+
+                                    startActivity(intent);
+
+                                }
+                            });
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    premiumDialogue();
+
+
+                                }
+                            });
                         } else if (stringId == R.string.downvoted) {
-                            intent = new Intent(MainActivity.this, AccountPostsActivity.class);
-                            intent.putExtra(AccountPostsActivity.EXTRA_USER_WHERE, PostDataSource.USER_WHERE_DOWNVOTED);
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    Intent intent = new Intent(MainActivity.this, AccountPostsActivity.class);
+                                    intent.putExtra(AccountPostsActivity.EXTRA_USER_WHERE, PostDataSource.USER_WHERE_DOWNVOTED);
+
+                                    startActivity(intent);
+
+                                }
+                            });
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    premiumDialogue();
+
+
+                                }
+                            });
                         } else if (stringId == R.string.hidden) {
                             intent = new Intent(MainActivity.this, AccountPostsActivity.class);
                             intent.putExtra(AccountPostsActivity.EXTRA_USER_WHERE, PostDataSource.USER_WHERE_HIDDEN);
@@ -1536,7 +1608,7 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                 break;
             case FABMoreOptionsBottomSheetFragment.FAB_OPTION_CHANGE_SORT_TYPE:
 
-                
+
                 storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -1556,7 +1628,7 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                 });
                 break;
             case FABMoreOptionsBottomSheetFragment.FAB_OPTION_CHANGE_POST_LAYOUT:
-                
+
                 storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -1602,9 +1674,9 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                     @Override
                     public void onSuccess(Uri uri) {
 
-                if (sectionsPagerAdapter != null) {
-                    sectionsPagerAdapter.filterPosts();
-                }
+                        if (sectionsPagerAdapter != null) {
+                            sectionsPagerAdapter.filterPosts();
+                        }
 
                     }
                 });
