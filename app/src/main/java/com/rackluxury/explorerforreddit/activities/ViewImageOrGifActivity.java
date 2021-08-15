@@ -45,26 +45,12 @@ import com.github.piasy.biv.view.GlideImageViewFactory;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
-import com.rackluxury.explorerforreddit.services.DownloadRedditVideoService;
-import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
-import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
-
-import java.io.File;
-import java.util.concurrent.Executor;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.rackluxury.explorerforreddit.BuildConfig;
 import com.rackluxury.explorerforreddit.Infinity;
 import com.rackluxury.explorerforreddit.R;
@@ -81,6 +67,17 @@ import com.rackluxury.explorerforreddit.font.TitleFontFamily;
 import com.rackluxury.explorerforreddit.font.TitleFontStyle;
 import com.rackluxury.explorerforreddit.services.DownloadMediaService;
 import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
+
+import java.io.File;
+import java.util.concurrent.Executor;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ViewImageOrGifActivity extends AppCompatActivity implements SetAsWallpaperCallback {
 
@@ -354,150 +351,222 @@ public class ViewImageOrGifActivity extends AppCompatActivity implements SetAsWa
 
     private void download() {
 
-          FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference storageReference = firebaseStorage.getReference();
 
 
-            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    isDownloading = false;
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                isDownloading = false;
 
 
-                    Intent intent = new Intent(ViewImageOrGifActivity.this, DownloadMediaService.class);
-                    intent.putExtra(DownloadMediaService.EXTRA_URL, mImageUrl);
-                    intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, isGif ? DownloadMediaService.EXTRA_MEDIA_TYPE_GIF : DownloadMediaService.EXTRA_MEDIA_TYPE_IMAGE);
-                    intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, mImageFileName);
-                    intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, mSubredditName);
-                    ContextCompat.startForegroundService(ViewImageOrGifActivity.this, intent);
-                    Toast.makeText(ViewImageOrGifActivity.this, R.string.download_started, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ViewImageOrGifActivity.this, DownloadMediaService.class);
+                intent.putExtra(DownloadMediaService.EXTRA_URL, mImageUrl);
+                intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, isGif ? DownloadMediaService.EXTRA_MEDIA_TYPE_GIF : DownloadMediaService.EXTRA_MEDIA_TYPE_IMAGE);
+                intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, mImageFileName);
+                intent.putExtra(DownloadMediaService.EXTRA_SUBREDDIT_NAME, mSubredditName);
+                ContextCompat.startForegroundService(ViewImageOrGifActivity.this, intent);
+                Toast.makeText(ViewImageOrGifActivity.this, R.string.download_started, Toast.LENGTH_SHORT).show();
 
 
-                }
-            });
-            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
-                    new FancyGifDialog.Builder(ViewImageOrGifActivity.this)
-                            .setTitle("Upgrade to pro.")
-                            .setMessage("Upgrade to Pro to access a lot of cool features.")
-                            .setTitleTextColor(R.color.colorHeadline)
-                            .setDescriptionTextColor(R.color.colorDescription)
-                            .setNegativeBtnText("Cancel")
-                            .setPositiveBtnBackground(R.color.colorYes)
-                            .setPositiveBtnText("Ok")
-                            .setNegativeBtnBackground(R.color.colorNo)
-                            .setGifResource(R.drawable.premium_gif)
-                            .isCancellable(true)
-                            .OnPositiveClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
+            }
+        });
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                new FancyGifDialog.Builder(ViewImageOrGifActivity.this)
+                        .setTitle("Upgrade to pro.")
+                        .setMessage("Upgrade to Pro to access a lot of cool features.")
+                        .setTitleTextColor(R.color.colorHeadline)
+                        .setDescriptionTextColor(R.color.colorDescription)
+                        .setNegativeBtnText("Cancel")
+                        .setPositiveBtnBackground(R.color.colorYes)
+                        .setPositiveBtnText("Ok")
+                        .setNegativeBtnBackground(R.color.colorNo)
+                        .setGifResource(R.drawable.premium_gif)
+                        .isCancellable(true)
+                        .OnPositiveClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
 
-                                    Intent intent = new Intent(ViewImageOrGifActivity.this, PremiumActivity.class);
-                                    startActivity(intent);
-                                }
-                            })
-                            .OnNegativeClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
+                                Intent intent = new Intent(ViewImageOrGifActivity.this, PremiumActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
 
-                                }
-                            })
-                            .build();
-
-
-                }
-            });
+                            }
+                        })
+                        .build();
 
 
-
+            }
+        });
 
 
     }
 
     private void shareImage() {
-        glide.asBitmap().load(mImageUrl).into(new CustomTarget<Bitmap>() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                if (getExternalCacheDir() != null) {
-                    Toast.makeText(ViewImageOrGifActivity.this, R.string.save_image_first, Toast.LENGTH_SHORT).show();
-                    SaveBitmapImageToFile.SaveBitmapImageToFile(mExecutor, new Handler(), resource,
-                            getExternalCacheDir().getPath(), mImageFileName,
-                            new SaveBitmapImageToFile.SaveBitmapImageToFileListener() {
-                                @Override
-                                public void saveSuccess(File imageFile) {
-                                    Uri uri = FileProvider.getUriForFile(ViewImageOrGifActivity.this,
-                                            BuildConfig.APPLICATION_ID + ".provider", imageFile);
-                                    Intent shareIntent = new Intent();
-                                    shareIntent.setAction(Intent.ACTION_SEND);
-                                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                                    shareIntent.setType("image/*");
-                                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
-                                }
+            public void onSuccess(Uri uri) {
 
-                                @Override
-                                public void saveFailed() {
-                                    Toast.makeText(ViewImageOrGifActivity.this,
-                                            R.string.cannot_save_image, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    Toast.makeText(ViewImageOrGifActivity.this,
-                            R.string.cannot_get_storage, Toast.LENGTH_SHORT).show();
-                }
+
+                glide.asBitmap().load(mImageUrl).into(new CustomTarget<Bitmap>() {
+
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        if (getExternalCacheDir() != null) {
+                            Toast.makeText(ViewImageOrGifActivity.this, R.string.save_image_first, Toast.LENGTH_SHORT).show();
+                            SaveBitmapImageToFile.SaveBitmapImageToFile(mExecutor, new Handler(), resource,
+                                    getExternalCacheDir().getPath(), mImageFileName,
+                                    new SaveBitmapImageToFile.SaveBitmapImageToFileListener() {
+                                        @Override
+                                        public void saveSuccess(File imageFile) {
+                                            Uri uri = FileProvider.getUriForFile(ViewImageOrGifActivity.this,
+                                                    BuildConfig.APPLICATION_ID + ".provider", imageFile);
+                                            Intent shareIntent = new Intent();
+                                            shareIntent.setAction(Intent.ACTION_SEND);
+                                            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                                            shareIntent.setType("image/*");
+                                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
+                                        }
+
+                                        @Override
+                                        public void saveFailed() {
+                                            Toast.makeText(ViewImageOrGifActivity.this,
+                                                    R.string.cannot_save_image, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        } else {
+                            Toast.makeText(ViewImageOrGifActivity.this,
+                                    R.string.cannot_get_storage, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
+
+
             }
-
+        });
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
+            public void onFailure(@NonNull Exception e) {
+                premiumDialogue();
+
 
             }
         });
     }
 
     private void shareGif() {
-        Toast.makeText(ViewImageOrGifActivity.this, R.string.save_gif_first, Toast.LENGTH_SHORT).show();
-        glide.asGif().load(mImageUrl).listener(new RequestListener<GifDrawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
-                return false;
-            }
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-                if (getExternalCacheDir() != null) {
-                    SaveGIFToFile.saveGifToFile(mExecutor, new Handler(), resource, getExternalCacheDir().getPath(), mImageFileName,
-                            new SaveGIFToFile.SaveGIFToFileAsyncTaskListener() {
-                                @Override
-                                public void saveSuccess(File imageFile) {
-                                    Uri uri = FileProvider.getUriForFile(ViewImageOrGifActivity.this,
-                                            BuildConfig.APPLICATION_ID + ".provider", imageFile);
-                                    Intent shareIntent = new Intent();
-                                    shareIntent.setAction(Intent.ACTION_SEND);
-                                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                                    shareIntent.setType("image/*");
-                                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
-                                }
+            public void onSuccess(Uri uri) {
+                Toast.makeText(ViewImageOrGifActivity.this, R.string.save_gif_first, Toast.LENGTH_SHORT).show();
+                glide.asGif().load(mImageUrl).listener(new RequestListener<GifDrawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
+                        return false;
+                    }
 
-                                @Override
-                                public void saveFailed() {
-                                    Toast.makeText(ViewImageOrGifActivity.this,
-                                            R.string.cannot_save_gif, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    Toast.makeText(ViewImageOrGifActivity.this,
-                            R.string.cannot_get_storage, Toast.LENGTH_SHORT).show();
-                }
-                return false;
+                    @Override
+                    public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
+                        if (getExternalCacheDir() != null) {
+                            SaveGIFToFile.saveGifToFile(mExecutor, new Handler(), resource, getExternalCacheDir().getPath(), mImageFileName,
+                                    new SaveGIFToFile.SaveGIFToFileAsyncTaskListener() {
+                                        @Override
+                                        public void saveSuccess(File imageFile) {
+                                            Uri uri = FileProvider.getUriForFile(ViewImageOrGifActivity.this,
+                                                    BuildConfig.APPLICATION_ID + ".provider", imageFile);
+                                            Intent shareIntent = new Intent();
+                                            shareIntent.setAction(Intent.ACTION_SEND);
+                                            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                                            shareIntent.setType("image/*");
+                                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                            startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
+                                        }
+
+                                        @Override
+                                        public void saveFailed() {
+                                            Toast.makeText(ViewImageOrGifActivity.this,
+                                                    R.string.cannot_save_gif, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        } else {
+                            Toast.makeText(ViewImageOrGifActivity.this,
+                                    R.string.cannot_get_storage, Toast.LENGTH_SHORT).show();
+                        }
+                        return false;
+                    }
+                }).submit();
+
             }
-        }).submit();
+        });
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                premiumDialogue();
+
+
+            }
+        });
+
     }
+
+    private void premiumDialogue() {
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+        new FancyGifDialog.Builder(ViewImageOrGifActivity.this)
+                .setTitle("Upgrade to pro.")
+                .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                .setTitleTextColor(R.color.colorHeadline)
+                .setDescriptionTextColor(R.color.colorDescription)
+                .setNegativeBtnText("Cancel")
+                .setPositiveBtnBackground(R.color.colorYes)
+                .setPositiveBtnText("Ok")
+                .setNegativeBtnBackground(R.color.colorNo)
+                .setGifResource(R.drawable.premium_gif)
+                .isCancellable(true)
+                .OnPositiveClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                        Intent intent = new Intent(ViewImageOrGifActivity.this, PremiumActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .OnNegativeClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                    }
+                })
+                .build();
+
+
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
