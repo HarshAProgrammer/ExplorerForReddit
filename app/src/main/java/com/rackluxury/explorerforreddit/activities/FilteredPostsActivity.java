@@ -2,6 +2,7 @@ package com.rackluxury.explorerforreddit.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,9 +17,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.r0adkll.slidr.Slidr;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,6 +61,8 @@ import com.rackluxury.explorerforreddit.post.PostDataSource;
 import com.rackluxury.explorerforreddit.postfilter.PostFilter;
 import com.rackluxury.explorerforreddit.readpost.InsertReadPost;
 import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 public class FilteredPostsActivity extends BaseActivity implements SortTypeSelectionCallback,
         PostLayoutBottomSheetFragment.PostLayoutSelectionCallback, ActivityToolbarInterface,
@@ -361,11 +370,19 @@ public class FilteredPostsActivity extends BaseActivity implements SortTypeSelec
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.action_sort_filtered_thing_activity:
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
                 switch (postType) {
                     case PostDataSource.TYPE_FRONT_PAGE:
                         SortTypeBottomSheetFragment bestSortTypeBottomSheetFragment = new SortTypeBottomSheetFragment();
@@ -406,6 +423,19 @@ public class FilteredPostsActivity extends BaseActivity implements SortTypeSelec
                         UserThingSortTypeBottomSheetFragment userThingSortTypeBottomSheetFragment = new UserThingSortTypeBottomSheetFragment();
                         userThingSortTypeBottomSheetFragment.show(getSupportFragmentManager(), userThingSortTypeBottomSheetFragment.getTag());
                 }
+
+
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        premiumDialogue();
+
+
+                    }
+                });
                 return true;
             case R.id.action_refresh_filtered_thing_activity:
                 if (mMenu != null) {
@@ -416,6 +446,10 @@ public class FilteredPostsActivity extends BaseActivity implements SortTypeSelec
                 }
                 return true;
             case R.id.action_lazy_mode_filtered_thing_activity:
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
                 MenuItem lazyModeItem = mMenu.findItem(R.id.action_lazy_mode_filtered_thing_activity);
                 if (isInLazyMode) {
                     ((FragmentCommunicator) mFragment).stopLazyMode();
@@ -431,13 +465,76 @@ public class FilteredPostsActivity extends BaseActivity implements SortTypeSelec
                         collapsingToolbarLayout.setLayoutParams(params);
                     }
                 }
+
+
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        premiumDialogue();
+
+
+                    }
+                });
                 return true;
             case R.id.action_change_post_layout_filtered_post_activity:
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
                 PostLayoutBottomSheetFragment postLayoutBottomSheetFragment = new PostLayoutBottomSheetFragment();
                 postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+
+
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        premiumDialogue();
+
+
+                    }
+                });
                 return true;
         }
         return false;
+    }
+    private void premiumDialogue() {
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+        new FancyGifDialog.Builder(FilteredPostsActivity.this)
+                .setTitle("Upgrade to pro.")
+                .setMessage("Upgrade to Pro to access a lot of cool features.")
+                .setTitleTextColor(R.color.colorHeadline)
+                .setDescriptionTextColor(R.color.colorDescription)
+                .setNegativeBtnText("Cancel")
+                .setPositiveBtnBackground(R.color.colorYes)
+                .setPositiveBtnText("Ok")
+                .setNegativeBtnBackground(R.color.colorNo)
+                .setGifResource(R.drawable.premium_gif)
+                .isCancellable(true)
+                .OnPositiveClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                        Intent intent = new Intent(FilteredPostsActivity.this, PremiumActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .OnNegativeClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                    }
+                })
+                .build();
+
+
     }
 
     @Override

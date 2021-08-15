@@ -759,6 +759,9 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                 break;
         }
         fab.setOnClickListener(view -> {
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
             switch (fabOption) {
                 case SharedPreferencesUtils.OTHER_ACTIVITIES_BOTTOM_APP_BAR_FAB_REFRESH: {
                     if (sectionsPagerAdapter != null) {
@@ -771,8 +774,23 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                     break;
                 }
                 case SharedPreferencesUtils.OTHER_ACTIVITIES_BOTTOM_APP_BAR_FAB_CHANGE_POST_LAYOUT: {
-                    postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+                    storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+
+                        }
+                    });
+                    storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            premiumDialogue();
+
+
+                        }
+                    });
                     break;
+
                 }
                 case SharedPreferencesUtils.OTHER_ACTIVITIES_BOTTOM_APP_BAR_FAB_SEARCH: {
                     Intent intent = new Intent(this, SearchActivity.class);
@@ -794,9 +812,22 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                     }
                     break;
                 case SharedPreferencesUtils.OTHER_ACTIVITIES_BOTTOM_APP_BAR_FAB_FILTER_POSTS:
-                    if (sectionsPagerAdapter != null) {
-                        sectionsPagerAdapter.filterPosts();
-                    }
+                    storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                                if (sectionsPagerAdapter != null) {
+                                    sectionsPagerAdapter.filterPosts();
+                                }
+                        }
+                    });
+                    storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            premiumDialogue();
+
+
+                        }
+                    });
                     break;
                 default:
                     PostTypeBottomSheetFragment postTypeBottomSheetFragment = new PostTypeBottomSheetFragment();
@@ -983,7 +1014,7 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                     FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
                     new FancyGifDialog.Builder(ViewUserDetailActivity.this)
                             .setTitle("Upgrade to pro.")
-                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setMessage("Upgrade to Pro to access a lot of cool features.")
                             .setTitleTextColor(R.color.colorHeadline)
                             .setDescriptionTextColor(R.color.colorDescription)
                             .setNegativeBtnText("Cancel")
@@ -1037,7 +1068,7 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                     FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
                     new FancyGifDialog.Builder(ViewUserDetailActivity.this)
                             .setTitle("Upgrade to pro.")
-                            .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                            .setMessage("Upgrade to Pro to access a lot of cool features.")
                             .setTitleTextColor(R.color.colorHeadline)
                             .setDescriptionTextColor(R.color.colorDescription)
                             .setNegativeBtnText("Cancel")
@@ -1221,9 +1252,45 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
     public void postLayoutSelected(int postLayout) {
         sectionsPagerAdapter.changePostLayout(postLayout);
     }
+    private void premiumDialogue() {
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+        new FancyGifDialog.Builder(ViewUserDetailActivity.this)
+                .setTitle("Upgrade to pro.")
+                .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                .setTitleTextColor(R.color.colorHeadline)
+                .setDescriptionTextColor(R.color.colorDescription)
+                .setNegativeBtnText("Cancel")
+                .setPositiveBtnBackground(R.color.colorYes)
+                .setPositiveBtnText("Ok")
+                .setNegativeBtnBackground(R.color.colorNo)
+                .setGifResource(R.drawable.premium_gif)
+                .isCancellable(true)
+                .OnPositiveClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                        Intent intent = new Intent(ViewUserDetailActivity.this, PremiumActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .OnNegativeClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                    }
+                })
+                .build();
+
+
+    }
 
     @Override
     public void fabOptionSelected(int option) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
         switch (option) {
             case FABMoreOptionsBottomSheetFragment.FAB_OPTION_SUBMIT_POST:
                 PostTypeBottomSheetFragment postTypeBottomSheetFragment = new PostTypeBottomSheetFragment();
@@ -1235,10 +1302,53 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                 }
                 break;
             case FABMoreOptionsBottomSheetFragment.FAB_OPTION_CHANGE_SORT_TYPE:
+
                 userThingSortTypeBottomSheetFragment.show(getSupportFragmentManager(), userThingSortTypeBottomSheetFragment.getTag());
                 break;
             case FABMoreOptionsBottomSheetFragment.FAB_OPTION_CHANGE_POST_LAYOUT:
-                postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        postLayoutBottomSheetFragment.show(getSupportFragmentManager(), postLayoutBottomSheetFragment.getTag());
+
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+                        new FancyGifDialog.Builder(ViewUserDetailActivity.this)
+                                .setTitle("Upgrade to pro.")
+                                .setMessage("Upgrade to Pro to access a lot of cool features.")
+                                .setTitleTextColor(R.color.colorHeadline)
+                                .setDescriptionTextColor(R.color.colorDescription)
+                                .setNegativeBtnText("Cancel")
+                                .setPositiveBtnBackground(R.color.colorYes)
+                                .setPositiveBtnText("Ok")
+                                .setNegativeBtnBackground(R.color.colorNo)
+                                .setGifResource(R.drawable.premium_gif)
+                                .isCancellable(true)
+                                .OnPositiveClicked(new FancyGifDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+
+                                        Intent intent = new Intent(ViewUserDetailActivity.this, PremiumActivity.class);
+                                        startActivity(intent);
+                                    }
+                                })
+                                .OnNegativeClicked(new FancyGifDialogListener() {
+                                    @Override
+                                    public void OnClick() {
+
+                                    }
+                                })
+                                .build();
+
+
+
+                    }
+                });
                 break;
             case FABMoreOptionsBottomSheetFragment.FAB_OPTION_SEARCH:
                 Intent intent = new Intent(this, SearchActivity.class);
@@ -1263,13 +1373,29 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                 break;
             }
             case FABMoreOptionsBottomSheetFragment.FAB_FILTER_POSTS: {
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
                 if (sectionsPagerAdapter != null) {
                     sectionsPagerAdapter.filterPosts();
                 }
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        premiumDialogue();
+
+
+                    }
+                });
                 break;
             }
         }
     }
+
 
     private void goToSubreddit() {
         View rootView = getLayoutInflater().inflate(R.layout.dialog_go_to_thing_edit_text, coordinatorLayout, false);

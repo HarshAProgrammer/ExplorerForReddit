@@ -661,7 +661,7 @@ public class ViewVideoActivity extends AppCompatActivity {
                 FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
                 new FancyGifDialog.Builder(ViewVideoActivity.this)
                         .setTitle("Upgrade to pro.")
-                        .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                        .setMessage("Upgrade to Pro to access a lot of cool features.")
                         .setTitleTextColor(R.color.colorHeadline)
                         .setDescriptionTextColor(R.color.colorDescription)
                         .setNegativeBtnText("Cancel")

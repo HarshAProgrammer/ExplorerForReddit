@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -64,6 +65,13 @@ import butterknife.Unbinder;
 import im.ene.toro.exoplayer.ExoCreator;
 import im.ene.toro.media.PlaybackInfo;
 import im.ene.toro.media.VolumeInfo;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.rackluxury.explorerforreddit.ActivityToolbarInterface;
 import com.rackluxury.explorerforreddit.FetchPostFilterReadPostsAndConcatenatedSubredditNames;
 import com.rackluxury.explorerforreddit.FragmentCommunicator;
@@ -75,6 +83,8 @@ import com.rackluxury.explorerforreddit.RedditDataRoomDatabase;
 import com.rackluxury.explorerforreddit.SortType;
 import com.rackluxury.explorerforreddit.activities.BaseActivity;
 import com.rackluxury.explorerforreddit.activities.FilteredPostsActivity;
+import com.rackluxury.explorerforreddit.activities.MainActivity;
+import com.rackluxury.explorerforreddit.activities.PremiumActivity;
 import com.rackluxury.explorerforreddit.activities.ViewSubredditDetailActivity;
 import com.rackluxury.explorerforreddit.adapters.PostRecyclerViewAdapter;
 import com.rackluxury.explorerforreddit.customtheme.CustomThemeWrapper;
@@ -124,6 +134,9 @@ import com.rackluxury.explorerforreddit.postfilter.PostFilterUsage;
 import com.rackluxury.explorerforreddit.readpost.ReadPost;
 import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
 import com.rackluxury.explorerforreddit.utils.Utils;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
+
 import retrofit2.Retrofit;
 
 import static im.ene.toro.media.PlaybackInfo.INDEX_UNSET;
@@ -1208,6 +1221,17 @@ public class PostFragment extends Fragment implements FragmentCommunicator {
     }
 
     public void changeSortType(SortType sortType) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                premiumDialogue();
+
+
+            }
+        });
         if (mPostViewModel != null) {
             if (mSharedPreferences.getBoolean(SharedPreferencesUtils.SAVE_SORT_TYPE, true)) {
                 switch (postType) {
@@ -1360,6 +1384,19 @@ public class PostFragment extends Fragment implements FragmentCommunicator {
 
     @Override
     public boolean startLazyMode() {
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                premiumDialogue();
+
+
+            }
+        });
+
         if (!hasPost) {
             Toast.makeText(activity, R.string.no_posts_no_lazy_mode, Toast.LENGTH_SHORT).show();
             return false;
@@ -1378,8 +1415,40 @@ public class PostFragment extends Fragment implements FragmentCommunicator {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Toast.makeText(activity, getString(R.string.lazy_mode_start, lazyModeInterval),
                 Toast.LENGTH_SHORT).show();
-
         return true;
+    }
+    private void premiumDialogue() {
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+        new FancyGifDialog.Builder(getActivity())
+                .setTitle("Upgrade to pro.")
+                .setMessage("Upgrade to Pro to access a lot of cool features.")
+                .setTitleTextColor(R.color.colorHeadline)
+                .setDescriptionTextColor(R.color.colorDescription)
+                .setNegativeBtnText("Cancel")
+                .setPositiveBtnBackground(R.color.colorYes)
+                .setPositiveBtnText("Ok")
+                .setNegativeBtnBackground(R.color.colorNo)
+                .setGifResource(R.drawable.premium_gif)
+                .isCancellable(true)
+                .OnPositiveClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                        Intent intent = new Intent(getActivity(), PremiumActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .OnNegativeClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                    }
+                })
+                .build();
+
+
     }
 
     @Override
