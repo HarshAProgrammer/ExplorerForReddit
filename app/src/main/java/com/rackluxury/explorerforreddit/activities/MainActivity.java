@@ -442,14 +442,45 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
         StorageReference storageReference = firebaseStorage.getReference();
         switch (option) {
             case SharedPreferencesUtils.MAIN_ACTIVITY_BOTTOM_APP_BAR_OPTION_SUBSCRIPTIONS: {
-                Intent intent = new Intent(this, SubscribedThingListingActivity.class);
-                startActivity(intent);
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+                        Intent intent = new Intent(MainActivity.this, SubscribedThingListingActivity.class);
+                        startActivity(intent);
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        premiumDialogue();
+
+
+                    }
+                });
                 break;
             }
             case SharedPreferencesUtils.MAIN_ACTIVITY_BOTTOM_APP_BAR_OPTION_MULTIREDDITS: {
-                Intent intent = new Intent(this, SubscribedThingListingActivity.class);
-                intent.putExtra(SubscribedThingListingActivity.EXTRA_SHOW_MULTIREDDITS, true);
-                startActivity(intent);
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+                        Intent intent = new Intent(MainActivity.this, SubscribedThingListingActivity.class);
+                        intent.putExtra(SubscribedThingListingActivity.EXTRA_SHOW_MULTIREDDITS, true);
+                        startActivity(intent);
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        premiumDialogue();
+
+
+                    }
+                });
+
                 break;
             }
             case SharedPreferencesUtils.MAIN_ACTIVITY_BOTTOM_APP_BAR_OPTION_INBOX: {
@@ -474,8 +505,6 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                 storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-
-
                         changeSortType();
                     }
                 });
@@ -579,10 +608,25 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                 break;
             }
             case SharedPreferencesUtils.MAIN_ACTIVITY_BOTTOM_APP_BAR_OPTION_GILDED: {
-                Intent intent = new Intent(this, AccountPostsActivity.class);
-                intent = new Intent(MainActivity.this, AccountPostsActivity.class);
-                intent.putExtra(AccountPostsActivity.EXTRA_USER_WHERE, PostDataSource.USER_WHERE_GILDED);
-                startActivity(intent);
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Intent intent = new Intent(MainActivity.this, AccountPostsActivity.class);
+                        intent = new Intent(MainActivity.this, AccountPostsActivity.class);
+                        intent.putExtra(AccountPostsActivity.EXTRA_USER_WHERE, PostDataSource.USER_WHERE_GILDED);
+                        startActivity(intent);
+
+
+                    }
+                });
+                storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        premiumDialogue();
+
+
+                    }
+                });
                 break;
             }
             default:
@@ -1059,7 +1103,22 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                                 sectionsPagerAdapter.changeNSFW(false);
                             }
                         } else if (stringId == R.string.settings) {
-                            intent = new Intent(MainActivity.this, SettingsActivity.class);
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                                    startActivity(intent);
+
+                                }
+                            });
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    premiumDialogue();
+
+
+                                }
+                            });
                         } else if (stringId == R.string.add_account) {
                             Intent addAccountIntent = new Intent(MainActivity.this, RedditLoginActivity.class);
                             startActivityForResult(addAccountIntent, LOGIN_ACTIVITY_REQUEST_CODE);
