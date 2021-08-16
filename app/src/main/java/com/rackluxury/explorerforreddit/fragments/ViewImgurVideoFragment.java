@@ -42,11 +42,15 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.rackluxury.explorerforreddit.ImgurMedia;
+import com.rackluxury.explorerforreddit.Infinity;
+import com.rackluxury.explorerforreddit.R;
+import com.rackluxury.explorerforreddit.activities.PremiumActivity;
+import com.rackluxury.explorerforreddit.services.DownloadMediaService;
+import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
@@ -55,13 +59,6 @@ import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.rackluxury.explorerforreddit.ImgurMedia;
-import com.rackluxury.explorerforreddit.Infinity;
-import com.rackluxury.explorerforreddit.R;
-import com.rackluxury.explorerforreddit.activities.RedditLoginActivity;
-import com.rackluxury.explorerforreddit.activities.PremiumActivity;
-import com.rackluxury.explorerforreddit.services.DownloadMediaService;
-import com.rackluxury.explorerforreddit.utils.SharedPreferencesUtils;
 
 public class ViewImgurVideoFragment extends Fragment {
 
@@ -73,6 +70,9 @@ public class ViewImgurVideoFragment extends Fragment {
     PlayerView videoPlayerView;
     @BindView(R.id.mute_exo_playback_control_view)
     ImageButton muteButton;
+    @Inject
+    @Named("default")
+    SharedPreferences mSharedPreferences;
     private Activity activity;
     private ImgurMedia imgurMedia;
     private SimpleExoPlayer player;
@@ -81,9 +81,6 @@ public class ViewImgurVideoFragment extends Fragment {
     private boolean isMute = false;
     private boolean isDownloading = false;
     private FirebaseAuth firebaseAuth;
-    @Inject
-    @Named("default")
-    SharedPreferences mSharedPreferences;
 
     public ViewImgurVideoFragment() {
         // Required empty public constructor
@@ -201,58 +198,66 @@ public class ViewImgurVideoFragment extends Fragment {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference storageReference = firebaseStorage.getReference();
 
 
-            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    isDownloading = false;
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                isDownloading = false;
 
-                    Intent intent = new Intent(activity, DownloadMediaService.class);
-                    intent.putExtra(DownloadMediaService.EXTRA_URL, imgurMedia.getLink());
-                    intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_VIDEO);
-                    intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, imgurMedia.getFileName());
-                    ContextCompat.startForegroundService(activity, intent);
-                    Toast.makeText(activity, R.string.download_started, Toast.LENGTH_SHORT).show();
-
-
-                }
-            });
-            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
-                    new FancyGifDialog.Builder(getActivity())
-                            .setTitle("Upgrade to pro.")
-                            .setMessage("Upgrade to Pro to access a lot of cool features.")
-                            .setTitleTextColor(R.color.colorHeadline)
-                            .setDescriptionTextColor(R.color.colorDescription)
-                            .setNegativeBtnText("Cancel")
-                            .setPositiveBtnBackground(R.color.colorYes)
-                            .setPositiveBtnText("Ok")
-                            .setNegativeBtnBackground(R.color.colorNo)
-                            .setGifResource(R.drawable.premium_gif)
-                            .isCancellable(true)
-                            .OnPositiveClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                    Intent intent = new Intent(getActivity(), PremiumActivity.class);
-                                    startActivity(intent);
-                                }
-                            })
-                            .OnNegativeClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            })
-                            .build();
+                Intent intent = new Intent(activity, DownloadMediaService.class);
+                intent.putExtra(DownloadMediaService.EXTRA_URL, imgurMedia.getLink());
+                intent.putExtra(DownloadMediaService.EXTRA_MEDIA_TYPE, DownloadMediaService.EXTRA_MEDIA_TYPE_VIDEO);
+                intent.putExtra(DownloadMediaService.EXTRA_FILE_NAME, imgurMedia.getFileName());
+                ContextCompat.startForegroundService(activity, intent);
+                Toast.makeText(activity, R.string.download_started, Toast.LENGTH_SHORT).show();
 
 
-                }
-            });
+            }
+        });
+        storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                premiumDialogue();
+
+
+            }
+        });
+
+
+    }
+
+    private void premiumDialogue() {
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
+        new FancyGifDialog.Builder(getActivity())
+                .setTitle("Upgrade to pro.")
+                .setMessage("Upgrade to Pro to Download, along with accessing a lot of cool features.")
+                .setTitleTextColor(R.color.colorHeadline)
+                .setDescriptionTextColor(R.color.colorDescription)
+                .setNegativeBtnText("Cancel")
+                .setPositiveBtnBackground(R.color.colorYes)
+                .setPositiveBtnText("Ok")
+                .setNegativeBtnBackground(R.color.colorNo)
+                .setGifResource(R.drawable.premium_gif)
+                .isCancellable(true)
+                .OnPositiveClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                        Intent intent = new Intent(getActivity(), PremiumActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .OnNegativeClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+                    }
+                })
+                .build();
 
 
     }

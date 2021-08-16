@@ -1011,33 +1011,7 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
             storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
-                    new FancyGifDialog.Builder(ViewUserDetailActivity.this)
-                            .setTitle("Upgrade to pro.")
-                            .setMessage("Upgrade to Pro to access a lot of cool features.")
-                            .setTitleTextColor(R.color.colorHeadline)
-                            .setDescriptionTextColor(R.color.colorDescription)
-                            .setNegativeBtnText("Cancel")
-                            .setPositiveBtnBackground(R.color.colorYes)
-                            .setPositiveBtnText("Ok")
-                            .setNegativeBtnBackground(R.color.colorNo)
-                            .setGifResource(R.drawable.premium_gif)
-                            .isCancellable(true)
-                            .OnPositiveClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                    Intent intent = new Intent(ViewUserDetailActivity.this, PremiumActivity.class);
-                                    startActivity(intent);
-                                }
-                            })
-                            .OnNegativeClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            })
-                            .build();
+                    premiumDialogue();
 
 
                 }
@@ -1065,33 +1039,7 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
             storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    FirebaseMessaging.getInstance().subscribeToTopic("upgrade_to_pro");
-                    new FancyGifDialog.Builder(ViewUserDetailActivity.this)
-                            .setTitle("Upgrade to pro.")
-                            .setMessage("Upgrade to Pro to access a lot of cool features.")
-                            .setTitleTextColor(R.color.colorHeadline)
-                            .setDescriptionTextColor(R.color.colorDescription)
-                            .setNegativeBtnText("Cancel")
-                            .setPositiveBtnBackground(R.color.colorYes)
-                            .setPositiveBtnText("Ok")
-                            .setNegativeBtnBackground(R.color.colorNo)
-                            .setGifResource(R.drawable.premium_gif)
-                            .isCancellable(true)
-                            .OnPositiveClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                    Intent intent = new Intent(ViewUserDetailActivity.this, PremiumActivity.class);
-                                    startActivity(intent);
-                                }
-                            })
-                            .OnNegativeClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            })
-                            .build();
+                    premiumDialogue();
 
 
                 }
