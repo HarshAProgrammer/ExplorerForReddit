@@ -48,6 +48,6 @@
 
     <Preference
         app:title="@string/settings_crash_reports_title"
-        app:fragment="ml.docilealligator.infinityforreddit.settings.CrashReportsFragment" />
+        app:fragment="com.rackluxury.explorerforreddit.settings.CrashReportsFragment" />
 
 </PreferenceScreen>

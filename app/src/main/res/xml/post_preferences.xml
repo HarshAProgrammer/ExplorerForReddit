@@ -20,7 +20,7 @@
 
     <Preference
         app:title="@string/settings_number_of_columns_in_post_feed_title"
-        app:fragment="ml.docilealligator.infinityforreddit.settings.NumberOfColumnsInPostFeedPreferenceFragment" />
+        app:fragment="com.rackluxury.explorerforreddit.settings.NumberOfColumnsInPostFeedPreferenceFragment" />
 
     <SwitchPreference
         app:defaultValue="false"

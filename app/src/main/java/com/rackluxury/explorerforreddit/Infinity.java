@@ -21,7 +21,7 @@ import com.rackluxury.explorerforreddit.broadcastreceivers.WallpaperChangeReceiv
 import com.rackluxury.explorerforreddit.events.ChangeNetworkStatusEvent;
 import com.rackluxury.explorerforreddit.utils.Utils;
 
-import ml.docilealligator.infinityforreddit.EventBusIndex;
+import com.rackluxury.explorerforreddit.EventBusIndex;
 
 public class Infinity extends Application implements LifecycleObserver  {
     private AppComponent mAppComponent;

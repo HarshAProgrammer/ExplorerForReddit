@@ -16,7 +16,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [eventBusIndex: 'ml.docilealligator.infinityforreddit.EventBusIndex']
+                arguments = [eventBusIndex: 'com.rackluxury.explorerforreddit.EventBusIndex']
             }
         }
     }

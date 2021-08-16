@@ -50,12 +50,12 @@ public class AboutPreferenceFragment extends PreferenceFragmentCompat {
         if (ratePreference != null) {
             ratePreference.setOnPreferenceClickListener(preference -> {
                 Intent playStoreIntent = new Intent(Intent.ACTION_VIEW);
-                playStoreIntent.setData(Uri.parse("market://details?id=ml.docilealligator.infinityforreddit"));
+                playStoreIntent.setData(Uri.parse("market://details?id=com.rackluxury.explorerforreddit"));
                 if (playStoreIntent.resolveActivity(activity.getPackageManager()) != null) {
                     activity.startActivity(playStoreIntent);
                 } else {
                     Intent intent = new Intent(activity, LinkResolverActivity.class);
-                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=ml.docilealligator.infinityforreddit"));
+                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.rackluxury.explorerforreddit"));
                     activity.startActivity(intent);
                 }
                 return true;

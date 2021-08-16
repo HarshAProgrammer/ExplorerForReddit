@@ -348,7 +348,7 @@ public class PostImageActivity extends BaseActivity implements FlairBottomSheetF
         captureFab.setOnClickListener(view -> {
             Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             try {
-                imageUri = FileProvider.getUriForFile(this, "ml.docilealligator.infinityforreddit.provider",
+                imageUri = FileProvider.getUriForFile(this, "com.rackluxury.explorerforreddit.provider",
                         File.createTempFile("temp_img", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
                 pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(pictureIntent, CAPTURE_IMAGE_REQUEST_CODE);

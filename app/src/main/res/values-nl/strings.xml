@@ -131,7 +131,7 @@ Tik om opnieuw te proberen."</string>
     <string name="unfollowed">"Ontvolgd"</string>
     <string name="unfollow_failed">"Ontvolgen Mislukt"</string>
     <string name="content_description_banner_imageview">"Subreddit Banner Afbeelding"</string>
-    <string name="app_label">"Infinity"</string>
+    <string name="app_label">"Explorer"</string>
     <string name="search_hint">"Zoek iets"</string>
     <string name="no_posts_no_lazy_mode">"Geen posts beschikbaar"</string>
     <string name="lazy_mode_start">"Luie Modus begint in %1$.1fs"</string>
@@ -385,10 +385,10 @@ Tik om opnieuw te proberen."</string>
     <string name="settings_reddit_account_title">"Reddit Account"</string>
     <string name="settings_reddit_account_summary">"u/Hostilenemy"</string>
     <string name="settings_subreddit_title">"Subreddit"</string>
-    <string name="settings_subreddit_summary">"r/Infinity_For_Reddit"</string>
+    <string name="settings_subreddit_summary">"r/Explorer_For_Reddit"</string>
     <string name="settings_share_title">"Delen"</string>
     <string name="settings_share_summary">"Deel deze app met andere mensen als je ervan geniet"</string>
-    <string name="settings_version_title">"Infinity For Reddit"</string>
+    <string name="settings_version_title">"Explorer For Reddit"</string>
     <string name="settings_version_summary">"Versie %s"</string>
     <string name="settings_category_customization_title">"Aanpassingen"</string>
     <string name="settings_customize_light_theme_title">"Licht Thema"</string>
@@ -451,7 +451,7 @@ Tik om opnieuw te proberen."</string>
     <string name="error_getting_multi_reddit_data">"Fout bij het ophalen van multireddit gegevens"</string>
     <string name="error_loading_multi_reddit_list">"Kan multireddits niet synchroniseren"</string>
     <string name="error_loading_subscriptions">"Kan abonnementen niet synchroniseren"</string>
-    <string name="share_this_app">"Bekijk Infinity voor Reddit, een geweldige Reddit client!"</string>
+    <string name="share_this_app">"Bekijk Explorer voor Reddit, een geweldige Reddit client!"</string>
     <string name="error_getting_subreddit_name">"Fout bij ophalen van subredditnaam"</string>
     <string name="share_post_link">"Deel Post Link"</string>
     <string name="share_image_link">"Deel Afbeelding Link"</string>
@@ -694,7 +694,7 @@ Gebaseerd op een Indigo Amoled Thema"</string>
     <string name="delete_all_front_page_scrolled_positions_success">"Verwijder alle gescrolde posities op de voorpagina gelukt"</string>
     <string name="reset_all_settings_success">"Reset alle instellingen gelukt"</string>
     <string name="username_preview">"u/Hostilenemy"</string>
-    <string name="subreddit_preview">"r/Infinity_For_Reddit"</string>
+    <string name="subreddit_preview">"r/Explorer_For_Reddit"</string>
     <string name="primary_text_preview">"Primaire Tekst"</string>
     <string name="secondary_text_preview">"Secundaire Tekst"</string>
     <string name="post_title_preview">"Dit is een post"</string>
