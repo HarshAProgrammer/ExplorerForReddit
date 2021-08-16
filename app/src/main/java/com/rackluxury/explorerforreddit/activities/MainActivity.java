@@ -849,11 +849,29 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                             intent = new Intent(MainActivity.this, ViewUserDetailActivity.class);
                             intent.putExtra(ViewUserDetailActivity.EXTRA_USER_NAME_KEY, mAccountName);
                         } else if (stringId == R.string.subscriptions) {
-                            if (mAccessToken != null) {
-                                intent = new Intent(MainActivity.this, SubscribedThingListingActivity.class);
-                            } else {
-                                intent = new Intent(MainActivity.this, AnonymousSubscriptionsActivity.class);
-                            }
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    if (mAccessToken != null) {
+                                        Intent intent = new Intent(MainActivity.this, SubscribedThingListingActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(MainActivity.this, AnonymousSubscriptionsActivity.class);
+                                        startActivity(intent);
+                                    }
+
+
+                                }
+                            });
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    premiumDialogue();
+
+
+                                }
+                            });
                         } else if (stringId == R.string.multi_reddit) {
                             intent = new Intent(MainActivity.this, SubscribedThingListingActivity.class);
                             intent.putExtra(SubscribedThingListingActivity.EXTRA_SHOW_MULTIREDDITS, true);
@@ -948,13 +966,29 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
                             mCustomThemeWrapper.setThemeType(CustomThemeSharedPreferencesUtils.LIGHT);
                         } else if (stringId == R.string.dark_theme) {
-                            mSharedPreferences.edit().putString(SharedPreferencesUtils.THEME_KEY, "1").apply();
-                            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
-                            if (mSharedPreferences.getBoolean(SharedPreferencesUtils.AMOLED_DARK_KEY, false)) {
-                                mCustomThemeWrapper.setThemeType(CustomThemeSharedPreferencesUtils.AMOLED);
-                            } else {
-                                mCustomThemeWrapper.setThemeType(CustomThemeSharedPreferencesUtils.DARK);
-                            }
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    mSharedPreferences.edit().putString(SharedPreferencesUtils.THEME_KEY, "1").apply();
+                                    AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
+                                    if (mSharedPreferences.getBoolean(SharedPreferencesUtils.AMOLED_DARK_KEY, false)) {
+                                        mCustomThemeWrapper.setThemeType(CustomThemeSharedPreferencesUtils.AMOLED);
+                                    } else {
+                                        mCustomThemeWrapper.setThemeType(CustomThemeSharedPreferencesUtils.DARK);
+                                    }
+
+                                }
+                            });
+                            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    premiumDialogue();
+
+
+                                }
+                            });
+
                         } else if (stringId == R.string.enable_nsfw) {
                             if (sectionsPagerAdapter != null) {
                                 mNsfwAndSpoilerSharedPreferences.edit().putBoolean((mAccountName == null ? "" : mAccountName) + SharedPreferencesUtils.NSFW_BASE, true).apply();
@@ -985,6 +1019,8 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                                         startActivity(logOutIntent);
                                         finish();
                                     });
+                        } else if (stringId == R.string.upgrade_to_premium) {
+                            intent = new Intent(MainActivity.this, PremiumActivity.class);
                         }
                         if (intent != null) {
                             startActivity(intent);
