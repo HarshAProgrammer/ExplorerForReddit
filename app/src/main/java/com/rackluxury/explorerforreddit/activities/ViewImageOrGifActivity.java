@@ -288,6 +288,10 @@ public class ViewImageOrGifActivity extends AppCompatActivity implements SetAsWa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
         int itemId = item.getItemId();
         if (itemId == android.R.id.home) {
             finish();
@@ -324,12 +328,16 @@ public class ViewImageOrGifActivity extends AppCompatActivity implements SetAsWa
                 shareImage();
             return true;
         } else if (itemId == R.id.action_set_wallpaper_view_image_or_gif_activity) {
-            if (!isGif) {
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+                if (!isGif) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     SetAsWallpaperBottomSheetFragment setAsWallpaperBottomSheetFragment = new SetAsWallpaperBottomSheetFragment();
                     setAsWallpaperBottomSheetFragment.show(getSupportFragmentManager(), setAsWallpaperBottomSheetFragment.getTag());
                 } else {
-                    WallpaperSetter.set(mExecutor, new Handler(), mImageUrl, WallpaperSetter.BOTH_SCREENS, this,
+                    WallpaperSetter.set(mExecutor, new Handler(), mImageUrl, WallpaperSetter.BOTH_SCREENS, ViewImageOrGifActivity.this,
                             new WallpaperSetter.SetWallpaperListener() {
                                 @Override
                                 public void success() {
@@ -343,6 +351,18 @@ public class ViewImageOrGifActivity extends AppCompatActivity implements SetAsWa
                             });
                 }
             }
+
+
+                }
+            });
+            storageReference.child(firebaseAuth.getUid()).child("Premium").getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    premiumDialogue();
+
+
+                }
+            });
             return true;
         }
 
