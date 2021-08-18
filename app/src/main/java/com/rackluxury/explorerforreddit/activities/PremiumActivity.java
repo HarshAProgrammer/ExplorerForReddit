@@ -1,8 +1,11 @@
 package com.rackluxury.explorerforreddit.activities;
 
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +41,8 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import com.rackluxury.explorerforreddit.R;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 public class PremiumActivity extends AppCompatActivity implements PurchasesUpdatedListener {
 
@@ -57,6 +62,7 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
+
 
         expensiveCheckerFunctionality();
 
@@ -84,6 +90,7 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                     } else {
                         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
                             FirebaseMessaging.getInstance().unsubscribeFromTopic("upgrade_to_pro");
+
 
 
                             StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Premium");
@@ -171,7 +178,20 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
 
                     FirebaseMessaging.getInstance().unsubscribeFromTopic("upgrade_to_pro");
 
+                    LayoutInflater inflater = LayoutInflater.from(PremiumActivity.this);
+                    View view = inflater.inflate(R.layout.alert_dialog_purchased, null);
+                    Button acceptButton = view.findViewById(R.id.btnOkAlertPurchased);
+                    final AlertDialog alertDialog = new AlertDialog.Builder(PremiumActivity.this)
+                            .setView(view)
+                            .show();
 
+                    acceptButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            alertDialog.dismiss();
+
+                        }
+                    });
                     StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Premium");
                     Uri uri1 = Uri.parse("android.resource://com.rackluxury.explorerforreddit/drawable/upgrade_to_premium");
                     UploadTask uploadTask = imageReference1.putFile(uri1);
