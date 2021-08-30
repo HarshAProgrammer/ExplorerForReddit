@@ -342,11 +342,11 @@ public class ViewPostDetailActivity extends BaseActivity implements SortTypeSele
         return isNsfwSubreddit;
     }
 
-    private void editComment(String commentAuthor, String commentContentMarkdown, int position) {
+    private void editComment(String commentContentMarkdown, int position) {
         if (sectionsPagerAdapter != null) {
             ViewPostDetailFragment fragment = sectionsPagerAdapter.getCurrentFragment();
             if (fragment != null) {
-                fragment.editComment(commentAuthor, commentContentMarkdown, position);
+                fragment.editComment(null, commentContentMarkdown, position);
             }
         }
     }
@@ -473,7 +473,7 @@ public class ViewPostDetailActivity extends BaseActivity implements SortTypeSele
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == EDIT_COMMENT_REQUEST_CODE) {
             if (data != null && resultCode == Activity.RESULT_OK) {
-                editComment(null,
+                editComment(
                         data.getStringExtra(EditCommentActivity.EXTRA_EDITED_COMMENT_CONTENT),
                         data.getExtras().getInt(EditCommentActivity.EXTRA_EDITED_COMMENT_POSITION));
             }

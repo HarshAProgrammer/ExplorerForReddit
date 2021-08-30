@@ -86,7 +86,6 @@ public class RPANActivity extends AppCompatActivity {
     ArrayList<RPANBroadcast> rpanBroadcasts;
     @State
     String nextCursor;
-    private SectionsPagerAdapter sectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -296,7 +295,7 @@ public class RPANActivity extends AppCompatActivity {
     }
 
     private void initializeViewPager() {
-        sectionsPagerAdapter = new SectionsPagerAdapter(this);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this);
         viewPager2.setAdapter(sectionsPagerAdapter);
         viewPager2.setOffscreenPageLimit(3);
         fixViewPager2Sensitivity(viewPager2);

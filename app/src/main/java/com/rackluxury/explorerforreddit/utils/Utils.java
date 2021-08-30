@@ -311,12 +311,6 @@ public class Utils {
     }
 
     public static void hideKeyboard(Activity activity) {
-        /*if (activity.getCurrentFocus() == null || !(activity.getCurrentFocus() instanceof EditText)) {
-            editText.requestFocus();
-        }
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);*/
 
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (inputMethodManager != null && activity.getCurrentFocus() != null) {

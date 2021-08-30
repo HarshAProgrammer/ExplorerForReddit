@@ -20,10 +20,6 @@ public class UploadedImagesBottomSheetFragment extends RoundedBottomSheetDialogF
 
     public static final String EXTRA_UPLOADED_IMAGES = "EUI";
 
-    private MaterialButton uploadButton;
-    private MaterialButton captureButton;
-    private RecyclerView uploadedImagesRecyclerView;
-    private UploadedImagesRecyclerViewAdapter adapter;
     private UploadImageEnabledActivity activity;
 
     public UploadedImagesBottomSheetFragment() {
@@ -35,8 +31,8 @@ public class UploadedImagesBottomSheetFragment extends RoundedBottomSheetDialogF
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_uploaded_images_bottom_sheet, container, false);
-        uploadButton = rootView.findViewById(R.id.upload_button_uploaded_images_bottom_sheet_fragment);
-        captureButton = rootView.findViewById(R.id.capture_button_uploaded_images_bottom_sheet_fragment);
+        MaterialButton uploadButton = rootView.findViewById(R.id.upload_button_uploaded_images_bottom_sheet_fragment);
+        MaterialButton captureButton = rootView.findViewById(R.id.capture_button_uploaded_images_bottom_sheet_fragment);
 
         uploadButton.setOnClickListener(view -> {
             activity.uploadImage();
@@ -48,8 +44,8 @@ public class UploadedImagesBottomSheetFragment extends RoundedBottomSheetDialogF
             dismiss();
         });
 
-        uploadedImagesRecyclerView = rootView.findViewById(R.id.recycler_view_uploaded_images_bottom_sheet);
-        adapter = new UploadedImagesRecyclerViewAdapter(
+        RecyclerView uploadedImagesRecyclerView = rootView.findViewById(R.id.recycler_view_uploaded_images_bottom_sheet);
+        UploadedImagesRecyclerViewAdapter adapter = new UploadedImagesRecyclerViewAdapter(
                 getArguments().getParcelableArrayList(EXTRA_UPLOADED_IMAGES), uploadedImage -> {
             activity.insertImageUrl(uploadedImage);
             dismiss();

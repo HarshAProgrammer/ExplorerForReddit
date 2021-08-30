@@ -508,20 +508,6 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
                     descriptionTextView.setText(userData.getDescription());
                 }
 
-                /*if (userData.isNSFW()) {
-                    if (nsfwWarningBuilder == null
-                            && !mNsfwAndSpoilerSharedPreferences.getBoolean((mAccountName == null ? "" : mAccountName) + SharedPreferencesUtils.NSFW_BASE, false)) {
-                        nsfwWarningBuilder = new MaterialAlertDialogBuilder(this, R.style.MaterialAlertDialogTheme)
-                                .setTitle(R.string.warning)
-                                .setMessage(R.string.this_user_has_nsfw_content)
-                                .setPositiveButton(R.string.leave, (dialogInterface, i)
-                                        -> {
-                                    finish();
-                                })
-                                .setNegativeButton(R.string.dismiss, null);
-                        nsfwWarningBuilder.show();
-                    }
-                }*/
             }
         });
 
@@ -1594,9 +1580,9 @@ public class ViewUserDetailActivity extends BaseActivity implements SortTypeSele
 
     private static class InsertUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        private UserDao userDao;
-        private UserData subredditData;
-        private InsertUserDataAsyncTaskListener insertUserDataAsyncTaskListener;
+        private final UserDao userDao;
+        private final UserData subredditData;
+        private final InsertUserDataAsyncTaskListener insertUserDataAsyncTaskListener;
         InsertUserDataAsyncTask(UserDao userDao, UserData userData,
                                 InsertUserDataAsyncTaskListener insertUserDataAsyncTaskListener) {
             this.userDao = userDao;

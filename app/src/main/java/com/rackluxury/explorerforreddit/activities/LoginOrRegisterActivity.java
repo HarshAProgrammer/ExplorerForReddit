@@ -30,7 +30,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity implements
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private GestureDetector gestureDetector;
-    private SharedPreferences prefs;
 
 
     @Override
@@ -62,7 +61,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity implements
             Animatoo.animateSlideUp(LoginOrRegisterActivity.this);
         } else {
             binding = DataBindingUtil.setContentView(LoginOrRegisterActivity.this, R.layout.activity_login_or_register);
-            prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
             boolean firstStart = prefs.getBoolean("loginOrRegisterFirst", true);
             if (firstStart) {
                 onFirst();

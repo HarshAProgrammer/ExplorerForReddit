@@ -98,7 +98,6 @@ public class UserListingFragment extends Fragment implements FragmentCommunicato
     @Inject
     Executor mExecutor;
     private LinearLayoutManager mLinearLayoutManager;
-    private String mQuery;
     private UserListingRecyclerViewAdapter mAdapter;
     private Activity mActivity;
     private SortType sortType;
@@ -135,7 +134,7 @@ public class UserListingFragment extends Fragment implements FragmentCommunicato
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mUserListingRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        mQuery = getArguments().getString(EXTRA_QUERY);
+        String mQuery = getArguments().getString(EXTRA_QUERY);
         boolean isGettingUserInfo = getArguments().getBoolean(EXTRA_IS_GETTING_USER_INFO);
         String accessToken = getArguments().getString(EXTRA_ACCESS_TOKEN);
         String accountName = getArguments().getString(EXTRA_ACCOUNT_NAME);

@@ -156,7 +156,6 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
     Executor mExecutor;
     private ArrayList<RedditGallerySubmissionRecyclerViewAdapter.RedditGalleryImageInfo> redditGalleryImageInfoList;
     private String mAccessToken;
-    private String mAccountName;
     private String iconUrl;
     private String subredditName;
     private boolean subredditSelected = false;
@@ -211,7 +210,7 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
         resources = getResources();
 
         mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
-        mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
+        String mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
 
         adapter = new RedditGallerySubmissionRecyclerViewAdapter(this, mCustomThemeWrapper, new RedditGallerySubmissionRecyclerViewAdapter.ItemClickListener() {
             @Override

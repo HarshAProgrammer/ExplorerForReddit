@@ -52,7 +52,6 @@ import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
 public abstract class BaseActivity extends AppCompatActivity {
     private boolean immersiveInterface;
     private boolean changeStatusBarIconColor;
-    private boolean transparentStatusBarAfterToolbarCollapsed;
     private boolean hasDrawerLayout = false;
     private boolean isImmersiveInterfaceApplicable = true;
     private int systemVisibilityToolbarExpanded = 0;
@@ -276,7 +275,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void setTransparentStatusBarAfterToolbarCollapsed() {
-        this.transparentStatusBarAfterToolbarCollapsed = true;
+        boolean transparentStatusBarAfterToolbarCollapsed = true;
     }
 
     protected void setHasDrawerLayout() {

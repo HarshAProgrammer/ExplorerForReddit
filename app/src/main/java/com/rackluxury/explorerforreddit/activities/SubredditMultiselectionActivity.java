@@ -81,7 +81,6 @@ public class SubredditMultiselectionActivity extends BaseActivity implements Act
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
     public SubscribedSubredditViewModel mSubscribedSubredditViewModel;
-    private String mAccessToken;
     private String mAccountName;
     private LinearLayoutManager mLinearLayoutManager;
     private SubredditMultiselectionRecyclerViewAdapter mAdapter;
@@ -132,7 +131,7 @@ public class SubredditMultiselectionActivity extends BaseActivity implements Act
 
         mSwipeRefreshLayout.setEnabled(false);
 
-        mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
+        String mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
         mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
         if (mAccessToken == null) {
             Toast.makeText(this, R.string.logged_out, Toast.LENGTH_SHORT).show();

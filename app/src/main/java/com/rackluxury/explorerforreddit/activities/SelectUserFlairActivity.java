@@ -64,12 +64,11 @@ public class SelectUserFlairActivity extends BaseActivity implements ActivityToo
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
     private LinearLayoutManager mLinearLayoutManager;
-    private boolean mNullAccessToken = false;
+    private final boolean mNullAccessToken = false;
     private String mAccessToken;
     private String mAccountName;
     private ArrayList<UserFlair> mUserFlairs;
     private String mSubredditName;
-    private UserFlairRecyclerViewAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +128,7 @@ public class SelectUserFlairActivity extends BaseActivity implements ActivityToo
     }
 
     private void instantiateRecyclerView() {
-        mAdapter = new UserFlairRecyclerViewAdapter(mCustomThemeWrapper, mUserFlairs, (userFlair, editUserFlair) -> {
+        UserFlairRecyclerViewAdapter mAdapter = new UserFlairRecyclerViewAdapter(mCustomThemeWrapper, mUserFlairs, (userFlair, editUserFlair) -> {
             if (editUserFlair) {
                 View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_flair, null);
                 EditText flairEditText = dialogView.findViewById(R.id.flair_edit_text_edit_flair_dialog);

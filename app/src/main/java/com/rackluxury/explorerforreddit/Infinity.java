@@ -25,7 +25,6 @@ import com.rackluxury.explorerforreddit.EventBusIndex;
 
 public class Infinity extends Application implements LifecycleObserver  {
     private AppComponent mAppComponent;
-    private NetworkWifiStatusReceiver mNetworkWifiStatusReceiver;
 
 
     @Override
@@ -37,43 +36,6 @@ public class Infinity extends Application implements LifecycleObserver  {
                 .build();
 
         //ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-
-        /*registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
-                activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-            }
-
-            @Override
-            public void onActivityStarted(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityResumed(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityPaused(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStopped(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(@NonNull Activity activity) {
-
-            }
-        });*/
 
         Bridge.initialize(getApplicationContext(), new SavedStateHandler() {
             @Override
@@ -89,23 +51,12 @@ public class Infinity extends Application implements LifecycleObserver  {
 
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
 
-        mNetworkWifiStatusReceiver =
-                new NetworkWifiStatusReceiver(() -> EventBus.getDefault().post(new ChangeNetworkStatusEvent(Utils.getConnectedNetwork(getApplicationContext()))));
+        NetworkWifiStatusReceiver mNetworkWifiStatusReceiver = new NetworkWifiStatusReceiver(() -> EventBus.getDefault().post(new ChangeNetworkStatusEvent(Utils.getConnectedNetwork(getApplicationContext()))));
         registerReceiver(mNetworkWifiStatusReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         registerReceiver(new WallpaperChangeReceiver(), new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
     }
 
-
-//    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-//    public void appInForeground(){
-//        Toast.makeText(this, "Foreground", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-//    public void appInBackground(){
-//        Toast.makeText(this, "Background", Toast.LENGTH_SHORT).show();
-//    }
 
     public AppComponent getAppComponent() {
         return mAppComponent;

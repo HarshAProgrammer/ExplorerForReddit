@@ -51,7 +51,7 @@ public class UserFollowing {
                         FetchUserData.fetchUserData(retrofit, username, new FetchUserData.FetchUserDataListener() {
                             @Override
                             public void onFetchUserDataSuccess(UserData userData, int inboxCount) {
-                                new UpdateSubscriptionAsyncTask(subscribedUserDao, userData, accountName, true).execute();
+                                new UpdateSubscriptionAsyncTask(subscribedUserDao, userData, accountName).execute();
                             }
 
                             @Override
@@ -60,7 +60,7 @@ public class UserFollowing {
                             }
                         });
                     } else {
-                        new UpdateSubscriptionAsyncTask(subscribedUserDao, username, accountName, false).execute();
+                        new UpdateSubscriptionAsyncTask(subscribedUserDao, username, accountName).execute();
                     }
                     userFollowingListener.onUserFollowingSuccess();
                 } else {
@@ -83,27 +83,27 @@ public class UserFollowing {
 
     private static class UpdateSubscriptionAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        private SubscribedUserDao subscribedUserDao;
+        private final SubscribedUserDao subscribedUserDao;
         private String username;
-        private String accountName;
+        private final String accountName;
         private SubscribedUserData subscribedUserData;
-        private boolean isSubscribing;
+        private final boolean isSubscribing;
 
         UpdateSubscriptionAsyncTask(SubscribedUserDao subscribedUserDao, String username,
-                                    String accountName, boolean isSubscribing) {
+                                    String accountName) {
             this.subscribedUserDao = subscribedUserDao;
             this.username = username;
             this.accountName = accountName;
-            this.isSubscribing = isSubscribing;
+            this.isSubscribing = false;
         }
 
         UpdateSubscriptionAsyncTask(SubscribedUserDao subscribedUserDao, UserData userData,
-                                    String accountName, boolean isSubscribing) {
+                                    String accountName) {
             this.subscribedUserDao = subscribedUserDao;
             this.subscribedUserData = new SubscribedUserData(userData.getName(), userData.getIconUrl(),
                     accountName, false);
             this.accountName = accountName;
-            this.isSubscribing = isSubscribing;
+            this.isSubscribing = true;
         }
 
         @Override

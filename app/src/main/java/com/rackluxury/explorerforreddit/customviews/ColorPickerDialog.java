@@ -15,14 +15,12 @@ import androidx.appcompat.app.AlertDialog;
 import com.rackluxury.explorerforreddit.R;
 
 public class ColorPickerDialog extends AlertDialog {
-    private View colorView;
-    private EditText colorValueEditText;
-    private SeekBar seekBarA;
-    private SeekBar seekBarR;
-    private SeekBar seekBarG;
-    private SeekBar seekBarB;
-    private Button cancelButton;
-    private Button okButton;
+    private final View colorView;
+    private final EditText colorValueEditText;
+    private final SeekBar seekBarA;
+    private final SeekBar seekBarR;
+    private final SeekBar seekBarG;
+    private final SeekBar seekBarB;
     private int colorValue;
     private boolean changeColorValueEditText = true;
     private ColorPickerListener colorPickerListener;
@@ -41,8 +39,8 @@ public class ColorPickerDialog extends AlertDialog {
         seekBarR = rootView.findViewById(R.id.r_seek_bar_color_picker);
         seekBarG = rootView.findViewById(R.id.g_seek_bar_color_picker);
         seekBarB = rootView.findViewById(R.id.b_seek_bar_color_picker);
-        cancelButton = rootView.findViewById(R.id.cancel_button_color_picker);
-        okButton = rootView.findViewById(R.id.ok_button_color_picker);
+        Button cancelButton = rootView.findViewById(R.id.cancel_button_color_picker);
+        Button okButton = rootView.findViewById(R.id.ok_button_color_picker);
 
         colorView.setBackgroundColor(color);
         colorValueEditText.setText(Integer.toHexString(color).toUpperCase());

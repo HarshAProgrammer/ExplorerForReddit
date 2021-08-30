@@ -28,17 +28,15 @@ public class CustomizeThemeRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     private static final int VIEW_TYPE_COLOR = 1;
     private static final int VIEW_TYPE_SWITCH = 2;
     private static final int VIEW_TYPE_THEME_NAME = 3;
-    private AppCompatActivity activity;
-    private ArrayList<CustomThemeSettingsItem> customThemeSettingsItems;
+    private final AppCompatActivity activity;
+    private final ArrayList<CustomThemeSettingsItem> customThemeSettingsItems;
     private String themeName;
-    private boolean isPredefinedTheme;
 
     public CustomizeThemeRecyclerViewAdapter(AppCompatActivity activity, String themeName,
                                              boolean isPredefinedTheme) {
         this.activity = activity;
         customThemeSettingsItems = new ArrayList<>();
         this.themeName = themeName;
-        this.isPredefinedTheme = isPredefinedTheme;
     }
 
     @Override

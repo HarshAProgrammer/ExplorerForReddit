@@ -62,8 +62,6 @@ public class SearchUsersResultActivity extends BaseActivity implements ActivityT
     SharedPreferences mCurrentAccountSharedPreferences;
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
-    private String mAccessToken;
-    private String mAccountName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +105,8 @@ public class SearchUsersResultActivity extends BaseActivity implements ActivityT
 
         String query = getIntent().getExtras().getString(EXTRA_QUERY);
 
-        mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
-        mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
+        String mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
+        String mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
 
         if (savedInstanceState == null) {
             mFragment = new UserListingFragment();

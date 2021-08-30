@@ -98,7 +98,6 @@ public class TrendingActivity extends BaseActivity {
     @Inject
     Executor mExecutor;
     private String mAccessToken;
-    private String mAccountName;
     private boolean isRefreshing = false;
     private ArrayList<TrendingSearch> trendingSearches;
     private TrendingSearchRecyclerViewAdapter adapter;
@@ -149,7 +148,7 @@ public class TrendingActivity extends BaseActivity {
         setToolbarGoToTop(toolbar);
 
         mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
-        mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
+        String mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);

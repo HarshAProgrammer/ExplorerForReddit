@@ -68,7 +68,6 @@ public class InboxFragment extends Fragment implements FragmentCommunicator {
     SharedPreferences mSharedPreferences;
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
-    private String mAccessToken;
     private String mWhere;
     private MessageRecyclerViewAdapter mAdapter;
     private RequestManager mGlide;
@@ -96,7 +95,7 @@ public class InboxFragment extends Fragment implements FragmentCommunicator {
         if (arguments == null) {
             return rootView;
         }
-        mAccessToken = getArguments().getString(EXTRA_ACCESS_TOKEN);
+        String mAccessToken = getArguments().getString(EXTRA_ACCESS_TOKEN);
         mGlide = Glide.with(this);
 
         if (mActivity.isImmersiveInterface()) {

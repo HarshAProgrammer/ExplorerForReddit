@@ -30,9 +30,9 @@ import pl.droidsonroids.gif.GifImageView;
 public class SubredditMultiselectionRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<SubredditWithSelection> subscribedSubreddits;
-    private RequestManager glide;
-    private int primaryTextColor;
-    private int colorAccent;
+    private final RequestManager glide;
+    private final int primaryTextColor;
+    private final int colorAccent;
 
     public SubredditMultiselectionRecyclerViewAdapter(Context context, CustomThemeWrapper customThemeWrapper) {
         glide = Glide.with(context);

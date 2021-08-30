@@ -1366,19 +1366,6 @@ public class MainActivity extends BaseActivity implements SortTypeSelectionCallb
                             mFetchUserInfoSuccess = false;
                         }
                     });
-            /*FetchMyInfo.fetchAccountInfo(mOauthRetrofit, mRedditDataRoomDatabase, mAccessToken,
-                    new FetchMyInfo.FetchMyInfoListener() {
-                        @Override
-                        public void onFetchMyInfoSuccess(String name, String profileImageUrl, String bannerImageUrl, int karma) {
-                            mAccountName = name;
-                            mFetchUserInfoSuccess = true;
-                        }
-
-                        @Override
-                        public void onFetchMyInfoFailed(boolean parseFailed) {
-                            mFetchUserInfoSuccess = false;
-                        }
-                    });*/
         }
     }
 

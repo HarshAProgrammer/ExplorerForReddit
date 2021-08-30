@@ -76,7 +76,6 @@ public class GiveAwardActivity extends BaseActivity {
     private String thingFullname;
     private int itemPosition;
     private String mAccessToken;
-    private AwardRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +112,7 @@ public class GiveAwardActivity extends BaseActivity {
     }
 
     private void bindView() {
-        adapter = new AwardRecyclerViewAdapter(Glide.with(this), mCustomThemeWrapper, award -> {
+        AwardRecyclerViewAdapter adapter = new AwardRecyclerViewAdapter(Glide.with(this), mCustomThemeWrapper, award -> {
             LayoutInflater inflater = getLayoutInflater();
             View layout = inflater.inflate(R.layout.dialog_give_award, null);
             SwitchMaterial switchMaterial = layout.findViewById(R.id.switch_material_give_award_dialog);

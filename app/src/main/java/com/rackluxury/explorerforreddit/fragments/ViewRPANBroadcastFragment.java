@@ -116,7 +116,6 @@ public class ViewRPANBroadcastFragment extends Fragment {
 
     private boolean wasPlaying;
     private boolean isMute = false;
-    private long resumePosition = -1;
     private boolean isDataSavingMode;
 
     public ViewRPANBroadcastFragment() {
@@ -345,6 +344,7 @@ public class ViewRPANBroadcastFragment extends Fragment {
             // Prepare the player with the source.
             player.prepare(new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(rpanBroadcast.rpanStream.hlsUrl)));
             player.setRepeatMode(Player.REPEAT_MODE_ALL);
+            long resumePosition = -1;
             if (resumePosition > 0) {
                 player.seekTo(resumePosition);
             }

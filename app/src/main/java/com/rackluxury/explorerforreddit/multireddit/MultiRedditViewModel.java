@@ -13,13 +13,12 @@ import java.util.List;
 import com.rackluxury.explorerforreddit.RedditDataRoomDatabase;
 
 public class MultiRedditViewModel extends AndroidViewModel {
-    private MultiRedditRepository mMultiRedditRepository;
-    private LiveData<List<MultiReddit>> mAllMultiReddits;
-    private LiveData<List<MultiReddit>> mAllFavoriteMultiReddits;
+    private final LiveData<List<MultiReddit>> mAllMultiReddits;
+    private final LiveData<List<MultiReddit>> mAllFavoriteMultiReddits;
 
     public MultiRedditViewModel(Application application, RedditDataRoomDatabase redditDataRoomDatabase, String accountName) {
         super(application);
-        mMultiRedditRepository = new MultiRedditRepository(redditDataRoomDatabase, accountName);
+        MultiRedditRepository mMultiRedditRepository = new MultiRedditRepository(redditDataRoomDatabase, accountName);
         mAllMultiReddits = mMultiRedditRepository.getAllMultiReddits();
         mAllFavoriteMultiReddits = mMultiRedditRepository.getAllFavoriteMultiReddits();
     }
@@ -33,9 +32,9 @@ public class MultiRedditViewModel extends AndroidViewModel {
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
-        private Application mApplication;
-        private RedditDataRoomDatabase mRedditDataRoomDatabase;
-        private String mAccountName;
+        private final Application mApplication;
+        private final RedditDataRoomDatabase mRedditDataRoomDatabase;
+        private final String mAccountName;
 
         public Factory(Application application, RedditDataRoomDatabase redditDataRoomDatabase, String accountName) {
             mApplication = application;

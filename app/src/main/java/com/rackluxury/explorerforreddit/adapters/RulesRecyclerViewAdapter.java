@@ -33,10 +33,10 @@ import com.rackluxury.explorerforreddit.bottomsheetfragments.UrlMenuBottomSheetF
 import com.rackluxury.explorerforreddit.customtheme.CustomThemeWrapper;
 
 public class RulesRecyclerViewAdapter extends RecyclerView.Adapter<RulesRecyclerViewAdapter.RuleViewHolder> {
-    private Markwon markwon;
+    private final Markwon markwon;
     private ArrayList<Rule> rules;
-    private int mPrimaryTextColor;
-    private int mSecondaryTextColor;
+    private final int mPrimaryTextColor;
+    private final int mSecondaryTextColor;
 
     public RulesRecyclerViewAdapter(AppCompatActivity activity, CustomThemeWrapper customThemeWrapper) {
         markwon = Markwon.builder(activity)

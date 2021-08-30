@@ -104,7 +104,6 @@ public class CustomThemePreviewActivity extends AppCompatActivity {
     @Inject
     @Named("default")
     SharedPreferences mSharedPreferences;
-    private ArrayList<CustomThemeSettingsItem> customThemeSettingsItems;
     private CustomTheme customTheme;
     private int expandedTabTextColor;
     private int expandedTabBackgroundColor;
@@ -124,7 +123,7 @@ public class CustomThemePreviewActivity extends AppCompatActivity {
 
         ((Infinity) getApplication()).getAppComponent().inject(this);
 
-        customThemeSettingsItems = getIntent().getParcelableArrayListExtra(EXTRA_CUSTOM_THEME_SETTINGS_ITEMS);
+        ArrayList<CustomThemeSettingsItem> customThemeSettingsItems = getIntent().getParcelableArrayListExtra(EXTRA_CUSTOM_THEME_SETTINGS_ITEMS);
         customTheme = CustomTheme.convertSettingsItemsToCustomTheme(customThemeSettingsItems, "ThemePreview");
 
         boolean systemDefault = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
@@ -424,8 +423,6 @@ public class CustomThemePreviewActivity extends AppCompatActivity {
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
-        private ThemePreviewPostsFragment themePreviewPostsFragment;
-        private ThemePreviewCommentsFragment themePreviewCommentsFragment;
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -462,10 +459,10 @@ public class CustomThemePreviewActivity extends AppCompatActivity {
             Fragment fragment = (Fragment) super.instantiateItem(container, position);
             switch (position) {
                 case 0:
-                    themePreviewPostsFragment = (ThemePreviewPostsFragment) fragment;
+                    ThemePreviewPostsFragment themePreviewPostsFragment = (ThemePreviewPostsFragment) fragment;
                     break;
                 case 1:
-                    themePreviewCommentsFragment = (ThemePreviewCommentsFragment) fragment;
+                    ThemePreviewCommentsFragment themePreviewCommentsFragment = (ThemePreviewCommentsFragment) fragment;
             }
             return fragment;
         }

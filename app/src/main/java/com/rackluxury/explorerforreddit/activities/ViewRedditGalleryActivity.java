@@ -52,7 +52,6 @@ public class ViewRedditGalleryActivity extends AppCompatActivity implements SetA
     HaulerView haulerView;
     @BindView(R.id.view_pager_view_reddit_gallery_activity)
     ViewPager viewPager;
-    private SectionsPagerAdapter sectionsPagerAdapter;
     private ArrayList<Post.Gallery> gallery;
     private String subredditName;
     @Inject
@@ -120,7 +119,7 @@ public class ViewRedditGalleryActivity extends AppCompatActivity implements SetA
 
     private void setupViewPager() {
         setToolbarTitle(0);
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {

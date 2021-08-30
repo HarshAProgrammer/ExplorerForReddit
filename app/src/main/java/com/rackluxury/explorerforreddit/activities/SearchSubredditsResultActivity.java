@@ -62,8 +62,6 @@ public class SearchSubredditsResultActivity extends BaseActivity implements Acti
     SharedPreferences mCurrentAccountSharedPreferences;
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
-    private String mAccessToken;
-    private String mAccountName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,8 +106,8 @@ public class SearchSubredditsResultActivity extends BaseActivity implements Acti
 
         String query = getIntent().getExtras().getString(EXTRA_QUERY);
 
-        mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
-        mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
+        String mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
+        String mAccountName = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCOUNT_NAME, null);
 
         if (savedInstanceState == null) {
             mFragment = new SubredditListingFragment();
