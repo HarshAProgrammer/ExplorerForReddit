@@ -1,7 +1,4 @@
 <resources>
-    <string name="play_console_license">YOUR PLAY CONSOLE LISENCE KEY</string>
-    <string name="premium">YOUR PRODUCT ID</string>
-
 
 
     <string name="loginOrRegister_welcome_txt">Easiest and best way to\n surf Reddit</string>
@@ -83,7 +80,6 @@ Privacy Policy\n\nLuxuryRack Inc. built the [Explorer for Reddit] app as a Comme
     <string name="view_reddit_gallery_activity_video_label">Video %1$d/%2$d</string>
     <string name="submit_crosspost_activity_label">Crosspost</string>
     <string name="give_award_activity_label">Give Award</string>
-    <string name="subreddit_filter_popular_and_all_activity_label">r/all and r/popular</string>
     <string name="customize_post_filter_activity_label">Customize Post Filter</string>
     <string name="filtered_posts_activity_subtitle">Filtered Posts</string>
     <string name="post_filter_preference_activity_label">Post Filter</string>
@@ -211,8 +207,6 @@ Privacy Policy\n\nLuxuryRack Inc. built the [Explorer for Reddit] app as a Comme
 
     <string name="content_description_banner_imageview">Subreddit Banner Image</string>
 
-    <string name="app_label">Explorer</string>
-    <string name="search_hint">Search anything</string>
     <string name="search_only_subreddits_hint">Search subreddits</string>
     <string name="search_only_users_hint">Search users</string>
 
@@ -589,8 +583,6 @@ Privacy Policy\n\nLuxuryRack Inc. built the [Explorer for Reddit] app as a Comme
     <string name="settings_respect_subreddit_recommended_comment_sort_type_title">Respect Subreddit Recommended Comment Sort Type</string>
     <string name="settings_respect_subreddit_recommended_comment_sort_type_summary">Comment sort type will not be saved</string>
     <string name="settings_post_filter_title">Post Filter</string>
-    <string name="settings_subreddit_filter_category">Hide Subreddits</string>
-    <string name="settings_subreddit_filter_popular_and_all">In r/popular and r/all</string>
     <string name="settings_credits_ufo_capturing_animation_title">UFO Capturing Animation</string>
     <string name="settings_hide_subreddit_description_title">Hide Subreddit Description</string>
     <string name="settings_disable_image_preview_title">Disable Image Preview in Data Saving Mode</string>
@@ -1074,7 +1066,6 @@ Privacy Policy\n\nLuxuryRack Inc. built the [Explorer for Reddit] app as a Comme
 
     <string name="warning">Warning</string>
     <string name="this_is_a_nsfw_subreddit">This is a NSFW subreddit.</string>
-    <string name="this_user_has_nsfw_content">This user has NSFW content</string>
     <string name="dismiss">Dismiss</string>
     <string name="leave">Leave</string>
 
@@ -1195,7 +1186,6 @@ Privacy Policy\n\nLuxuryRack Inc. built the [Explorer for Reddit] app as a Comme
 
     <string name="load_rpan_broadcasts_failed">Cannot load RPAN broadcasts</string>
     <string name="parse_rpan_broadcasts_failed">Cannot parse RPAN broadcasts</string>
-    <string name="parse_rpan_broadcast_failed">Cannot parse RPAN broadcast</string>
 
     <string name="search_comments">Search Comments</string>
 
@@ -1203,16 +1193,11 @@ Privacy Policy\n\nLuxuryRack Inc. built the [Explorer for Reddit] app as a Comme
 
     <string name="error_fetch_trending_search">Fetch trending searches failed.\nTap to retry.</string>
     <string name="error_parse_trending_search">Parse trending searches failed.\nTap to retry.</string>
-    <string name="no_trending_search">No trending searches found.\nTap to retry.</string>
-
-
 
 
     <!--Premium Activity-->
     <string name="download"><font fgcolor='#0084ff'>•</font> Download Available </string>
-    <string name="newfeatures"><font fgcolor='#0084ff'>•</font> New features</string>
     <string name="createposts"><font fgcolor='#0084ff'>•</font> Create Posts</string>
-    <string name="premiumbuttontext">Buy for </string>
     <string name="nightMode"><font fgcolor='#0084ff'>•</font> Enable Night Mode</string>
     <string name="postLayout"><font fgcolor='#0084ff'>•</font> Change Post Layout</string>
     <string name="slowMode"><font fgcolor='#0084ff'>•</font> Enable Slow Mode</string>
