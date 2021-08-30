@@ -52,7 +52,7 @@ public class MaterialYouUtils {
 
                 if (wallpaperColors != null) {
                     int colorPrimaryInt = lightenColor(wallpaperColors.getPrimaryColor().toArgb(), 0.4);
-                    int colorPrimaryDarkInt = darkenColor(colorPrimaryInt, 0.3);
+                    int colorPrimaryDarkInt = darkenColor(colorPrimaryInt);
                     int backgroundColor = lightenColor(colorPrimaryInt, 0.2);
                     int cardViewBackgroundColor = lightenColor(colorPrimaryInt, 0.6);
                     Color colorAccent = wallpaperColors.getSecondaryColor();
@@ -128,10 +128,10 @@ public class MaterialYouUtils {
                 (int) (Color.blue(color) + (255 - Color.blue(color)) * ratio));
     }
 
-    private static int darkenColor(int color, double ratio) {
-        return Color.argb(Color.alpha(color), (int) (Color.red(color) * (1 - ratio)),
-                (int) (Color.green(color) * (1 - ratio)),
-                (int) (Color.blue(color) * (1 - ratio)));
+    private static int darkenColor(int color) {
+        return Color.argb(Color.alpha(color), (int) (Color.red(color) * (1 - 0.3)),
+                (int) (Color.green(color) * (1 - 0.3)),
+                (int) (Color.blue(color) * (1 - 0.3)));
 
     }
 

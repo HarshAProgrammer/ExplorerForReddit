@@ -37,14 +37,14 @@ public class VoteThing {
                 if (response.isSuccessful()) {
                     voteThingListener.onVoteThingSuccess(position);
                 } else {
-                    voteThingListener.onVoteThingFail(position);
+                    voteThingListener.onVoteThingFail();
                     Toast.makeText(context, "Code " + response.code() + " Body: " + response.body(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                voteThingListener.onVoteThingFail(position);
+                voteThingListener.onVoteThingFail();
                 Toast.makeText(context, "Network error " + "Body: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
@@ -83,7 +83,7 @@ public class VoteThing {
     public interface VoteThingListener {
         void onVoteThingSuccess(int position);
 
-        void onVoteThingFail(int position);
+        void onVoteThingFail();
     }
 
     public interface VoteThingWithoutPositionListener {

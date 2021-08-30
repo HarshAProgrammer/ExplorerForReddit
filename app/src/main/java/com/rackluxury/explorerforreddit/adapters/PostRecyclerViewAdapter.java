@@ -2466,7 +2466,7 @@ public class PostRecyclerViewAdapter extends PagedListAdapter<Post, RecyclerView
                         }
 
                         @Override
-                        public void onVoteThingFail(int position1) {
+                        public void onVoteThingFail() {
                             Toast.makeText(mActivity, R.string.vote_failed, Toast.LENGTH_SHORT).show();
                             post.setVoteType(previousVoteType);
                             if (getBindingAdapterPosition() == position) {
@@ -2562,7 +2562,7 @@ public class PostRecyclerViewAdapter extends PagedListAdapter<Post, RecyclerView
                         }
 
                         @Override
-                        public void onVoteThingFail(int position1) {
+                        public void onVoteThingFail() {
                             Toast.makeText(mActivity, R.string.vote_failed, Toast.LENGTH_SHORT).show();
                             post.setVoteType(previousVoteType);
                             if (getBindingAdapterPosition() == position) {
@@ -3481,7 +3481,7 @@ public class PostRecyclerViewAdapter extends PagedListAdapter<Post, RecyclerView
                         }
 
                         @Override
-                        public void onVoteThingFail(int position1) {
+                        public void onVoteThingFail() {
                             Toast.makeText(mActivity, R.string.vote_failed, Toast.LENGTH_SHORT).show();
                             post.setVoteType(previousVoteType);
                             if (getBindingAdapterPosition() == position) {
@@ -3578,7 +3578,7 @@ public class PostRecyclerViewAdapter extends PagedListAdapter<Post, RecyclerView
                         }
 
                         @Override
-                        public void onVoteThingFail(int position1) {
+                        public void onVoteThingFail() {
                             Toast.makeText(mActivity, R.string.vote_failed, Toast.LENGTH_SHORT).show();
                             post.setVoteType(previousVoteType);
                             if (getBindingAdapterPosition() == position) {

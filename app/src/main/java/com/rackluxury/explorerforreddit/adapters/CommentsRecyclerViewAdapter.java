@@ -1309,7 +1309,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                         }
 
                         @Override
-                        public void onVoteThingFail(int position) {
+                        public void onVoteThingFail() {
                         }
                     }, comment.getFullName(), newVoteType, getBindingAdapterPosition());
                 }
@@ -1387,7 +1387,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                         }
 
                         @Override
-                        public void onVoteThingFail(int position1) {
+                        public void onVoteThingFail() {
                         }
                     }, comment.getFullName(), newVoteType, getBindingAdapterPosition());
                 }

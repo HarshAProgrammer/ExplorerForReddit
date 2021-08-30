@@ -597,7 +597,7 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
                         }
 
                         @Override
-                        public void onVoteThingFail(int position) {
+                        public void onVoteThingFail() {
                         }
                     }, comment.getFullName(), newVoteType, getBindingAdapterPosition());
                 }
@@ -663,7 +663,7 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
                         }
 
                         @Override
-                        public void onVoteThingFail(int position1) {
+                        public void onVoteThingFail() {
                         }
                     }, comment.getFullName(), newVoteType, getBindingAdapterPosition());
                 }
