@@ -11,8 +11,8 @@ android {
         applicationId "com.rackluxury.explorerforreddit"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 71
-        versionName "5.0.0-beta1"
+        versionCode 1
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
