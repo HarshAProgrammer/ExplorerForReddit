@@ -73,12 +73,11 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
 
     private void premiumCheckerFunctionality() {
 
-        Toolbar toolbar = findViewById(R.id.toolbar_premium);
+        Toolbar toolbar = findViewById(R.id.toolbarPremium);
         Button buttonPreChecker = findViewById(R.id.btnPremium);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Most Premium Watches");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
