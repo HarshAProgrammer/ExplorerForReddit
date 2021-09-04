@@ -39,8 +39,7 @@
         tools:replace="android:label">
         <activity
             android:name="com.rackluxury.explorerforreddit.activities.PremiumActivity"
-            android:exported="true"
-            />
+            android:theme="@style/AppThemeLogin" />
 
         <activity
             android:name="com.rackluxury.explorerforreddit.activities.LoginOrRegisterActivity"

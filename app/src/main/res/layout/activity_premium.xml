@@ -1,168 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="activities.PremiumActivity">
-    <LinearLayout
+    android:orientation="vertical"
+    tools:context=".activities.PremiumActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_layout_premium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/froozeblue"
-        android:orientation="vertical">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:outlineAmbientShadowColor="@color/transparent"
-            android:outlineSpotShadowColor="@color/transparent"
-            android:background="@color/transparent">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarPremium"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/searchappbar"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="30dp"
-                    android:fontFamily="@font/roboto"
-                    android:gravity="center"
-                    android:text="Explorer for Reddit"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/ffffffff"
-                    android:textSize="25sp"
-                    android:textStyle="normal" />
-            </androidx.appcompat.widget.Toolbar>
-        </com.google.android.material.appbar.AppBarLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal" >
-            <ImageView
-                android:layout_width="200dp"
-                android:src="@drawable/splash_screen"
-                android:adjustViewBounds="true"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-        <View
-            android:id="@+id/cover"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout_premium"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
-    </LinearLayout>
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:titleEnabled="false"
+            app:toolbarId="@+id/toolbar_premium">
 
-    <TextView
-        android:id="@+id/advantages"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_premium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:navigationIcon="?attr/homeAsUpIndicator" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <Button
+        android:id="@+id/btnPremium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/froozeblue"
-        android:text="Benefits:"
-        android:layout_marginStart="20dp"
-        android:textSize="28sp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000" />
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:gravity="center"
+        android:text="Purchase" />
 
-    <TextView
-        android:id="@+id/Downloads"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/advantages"
-        android:layout_marginStart="30dp"
-        android:fontFamily="@font/roboto"
-        android:text="@string/download"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000" />
-
-    <TextView
-        android:id="@+id/addPosts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Downloads"
-        android:layout_marginStart="30dp"
-        android:fontFamily="@font/roboto"
-        android:pointerIcon="arrow"
-        android:text="@string/createposts"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000" />
-
-    <TextView
-        android:id="@+id/nightMode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/addPosts"
-        android:layout_marginStart="30dp"
-        android:fontFamily="@font/roboto"
-        android:pointerIcon="arrow"
-        android:text="@string/nightMode"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000" />
-
-    <TextView
-        android:id="@+id/changePostLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nightMode"
-        android:layout_marginStart="30dp"
-        android:fontFamily="@font/roboto"
-        android:pointerIcon="arrow"
-        android:text="@string/postLayout"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000" />
-
-    <TextView
-        android:id="@+id/slowMode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/changePostLayout"
-        android:layout_marginStart="30dp"
-        android:fontFamily="@font/roboto"
-        android:pointerIcon="arrow"
-        android:text="@string/slowMode"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnPermium"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="289dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="7dp"
-        android:background="@drawable/button_bg"
-        android:elevation="10dp"
-        android:text="Purchase"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        app:cornerRadius="30dp"
-        app:rippleColor="#00FFFFFF" />
-    <TextView
-        android:id="@+id/alreadysubscribed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:visibility="gone"
-        android:text="You're already subscribed\n Thank You"
-        android:textSize="30sp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
-</RelativeLayout>
+</LinearLayout>

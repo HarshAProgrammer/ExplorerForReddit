@@ -27,6 +27,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -36,13 +37,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+
 import com.rackluxury.explorerforreddit.R;
-import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
-import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 public class PremiumActivity extends AppCompatActivity implements PurchasesUpdatedListener {
 
@@ -64,16 +65,22 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
         storageReference = firebaseStorage.getReference();
 
 
-        expensiveCheckerFunctionality();
+        premiumCheckerFunctionality();
 
 
     }
 
 
-    private void expensiveCheckerFunctionality() {
+    private void premiumCheckerFunctionality() {
 
-        Button buttonExpChecker = findViewById(R.id.btnPermium);
+        Toolbar toolbar = findViewById(R.id.toolbar_premium);
+        Button buttonPreChecker = findViewById(R.id.btnPremium);
 
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Most Premium Watches");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
 
         billingClient = BillingClient.newBuilder(PremiumActivity.this).enablePendingPurchases().setListener(new PurchasesUpdatedListener() {
@@ -90,7 +97,6 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                     } else {
                         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
                             FirebaseMessaging.getInstance().unsubscribeFromTopic("upgrade_to_pro");
-
 
 
                             StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Premium");
@@ -133,7 +139,7 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
         skulist.add(categories);
         final SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
         params.setSkusList(skulist).setType(BillingClient.SkuType.INAPP);  //Skutype.subs for Subscription
-        buttonExpChecker.setOnClickListener(new View.OnClickListener() {
+        buttonPreChecker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
