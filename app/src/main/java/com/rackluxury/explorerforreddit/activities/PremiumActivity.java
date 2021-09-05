@@ -194,7 +194,9 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                         @Override
                         public void onClick(View view) {
                             alertDialog.dismiss();
-
+                            finish();
+                            Intent openMainFromPremium = new Intent(PremiumActivity.this, MainActivity.class);
+                            startActivity(openMainFromPremium);
                         }
                     });
                     StorageReference imageReference1 = storageReference.child(firebaseAuth.getUid()).child("Premium");
@@ -211,7 +213,6 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             Toasty.success(PremiumActivity.this, "Purchase Successful", Toast.LENGTH_LONG).show();
-                            finish();
 
                         }
                     });
